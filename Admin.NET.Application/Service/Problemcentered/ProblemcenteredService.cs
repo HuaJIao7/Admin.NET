@@ -140,6 +140,7 @@ public class ProblemcenteredService : IDynamicApiController, ITransient
                 );
 
         return await query.OrderBuilder(input).ToPagedListAsync(input.Page, input.PageSize);
+        return await query.OrderBuilder(input).ToPagedListAsync(input.Page, input.PageSize);
 
 
 
