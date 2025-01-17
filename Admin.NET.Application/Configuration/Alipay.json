@@ -1,0 +1,17 @@
+﻿{
+  "$schema": "https://gitee.com/dotnetchina/Furion/raw/v4/schemas/v4/furion-schema.json",
+
+  "Alipay": { // 支付宝支付配置，文档地址：https://openhome.alipay.com/develop/sandbox/app
+    "AppId": "9000000000000000", // 支付宝 APPID
+    "AlipayWebsocketUrl": "openchannel-sandbox.dl.alipaydev.com", // websocket服务地址
+    "ServerUrl": "https://openapi-sandbox.dl.alipaydev.com/gateway.do",  // 支付宝网关地址
+    "AuthUrl": "https://openauth.alipay.com/oauth2/publicAppAuthorize.htm", // 授权回调地址
+    "NotifyUrl": "http://xxxx.xxx/api/Alipay/Notify", // 应用网关地址
+    "PrivateKey": "xxxxxxxxx", // 应用私钥
+    "SignType": "RSA2", // 加密算法
+    "EncryptKey": "xxxxxxxx", // 从支付宝获取敏感信息时的加密密钥
+    "AlipayPublicCertPath": "/AlipayCrt/alipayPublicCert.crt", // 支付宝公钥证书存放路径
+    "RootCertPath": "/AlipayCrt/alipayRootCert.crt", // 支付宝根证书存放路径
+    "AppCertPath": "/AlipayCrt/appPublicCert.crt" // 应用公钥证书存放路径
+  }
+}
