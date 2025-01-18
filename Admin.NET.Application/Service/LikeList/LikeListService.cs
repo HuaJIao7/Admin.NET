@@ -53,10 +53,8 @@ public class LikeListSerivce : IDynamicApiController, ITransient
     {
         var asd = await _userRep.AsQueryable().Where(x => x.Id == input.UserId).ClearFilter().FirstAsync();
         var dsa = await _problemcentered.AsQueryable().Where(x => x.Id == input.ProblemId).ClearFilter().FirstAsync();
-        if( asd == null || dsa == null)
-        {
-            return;
-        }
+        if( asd == null || dsa == null) return;
+
         //var user = await _userRep.AsQueryable().ClearFilter().Where(x => x.Id == input.UserId).FirstAsync();
         var entity = input.Adapt<Entity.LikeList>();
         entity.ProblemId = input.ProblemId;
