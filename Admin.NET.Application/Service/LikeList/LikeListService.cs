@@ -63,21 +63,18 @@ public class LikeListSerivce : IDynamicApiController, ITransient
         entity.UserId = input.UserId;
         await _likeList.InsertAsync(entity);
 
+        var entitys = await _problemcentered.AsQueryable().ClearFilter().Where(x => x.Id == input.ProblemId).FirstAsync();
+        entitys.GiveUpCount += 1;
+        await _problemcentered.AsUpdateable(entitys).ExecuteCommandAsync();
 
 
-        //var entity = await _problemcentered.AsQueryable().ClearFilter().Where(x => x.Id == input.ProblemId).FirstAsync();
+
         //if (entity == null)
         //    throw Oops.Oh(ErrorCodeEnum.D1002);
 
         //var count = await _likeList.AsQueryable().ClearFilter().Where(x => x.ProblemId == input.ProblemId && x.UserId == input.UserId).CountAsync();
 
         //var user = await _userRep.AsQueryable().ClearFilter().Where(x => x.Id == input.UserId).FirstAsync();
-        //    entity.GiveUpCount += 1;
-        //    await _problemcentered.AsUpdateable(entity).ExecuteCommandAsync();
-        //    var likeList = input.Adapt<Entity.LikeList>();
-        //    likeList.UserName = user.RealName;
-        //    likeList.ProblemId = input.ProblemId;
-        //    await _likeList.InsertAsync(likeList);
 
         //if (count == 0)
         //{
