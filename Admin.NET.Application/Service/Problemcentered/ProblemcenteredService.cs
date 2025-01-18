@@ -91,7 +91,7 @@ public class ProblemcenteredService : IDynamicApiController, ITransient
     // [AllowAnonymous]
     [DisplayName("模糊查询问题中心列表")]
     [ApiDescriptionSettings(Name = "GetConditionProblemcentered"), HttpPost]
-    public async Task<SqlSugarPagedList<Entity.Problemcentered>> GetConditionProblemcentered(ProblemcenteredInput input, string? name,string? HandleUserName,string? Status)
+    public async Task<SqlSugarPagedList<Entity.Problemcentered>> GetConditionProblemcentered(ProblemcenteredDto input, string? name,string? HandleUserName,string? Status)
     {
         var query = _problemcenteredRepository.AsQueryable()
             .WhereIF(!string.IsNullOrWhiteSpace(input.PlanName), u => u.PlanName.Contains(input.PlanName.Trim()))
@@ -139,7 +139,6 @@ public class ProblemcenteredService : IDynamicApiController, ITransient
                 (u.HandleTime >= input.HandleTimeMinimum && u.HandleTime <= input  .HandleTimeMax)
                 );
 
-        return await query.OrderBuilder(input).ToPagedListAsync(input.Page, input.PageSize);
         return await query.OrderBuilder(input).ToPagedListAsync(input.Page, input.PageSize);
 
 

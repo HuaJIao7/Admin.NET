@@ -14,7 +14,7 @@ namespace Admin.NET.Application.Service.Problemcentered.Dto;
 /// <summary>
 /// 问题中心
 /// </summary>
-public class ProblemcenteredInput : BasePageInput
+public class ProblemcenteredInput
 {
     /// <summary>
     /// 计划id
@@ -151,10 +151,7 @@ public class ProblemcenteredInput : BasePageInput
     ///// </summary>
     //[SqlSugar.SugarColumn(IsIgnore = true)]
     //public List<Entity.ProblemComment> Comments { get; set; }
-    public DateTime? ReportTimeMinimum { get; set; }
-    public DateTime? ReportTimeMax { get; set; }
-    public DateTime? HandleTimeMinimum { get; set; }
-    public DateTime? HandleTimeMax { get; set; }
+
 }
 
 /// <summary>

@@ -14,7 +14,7 @@ namespace Admin.NET.Application.Service.Problemcentered.Dto;
 /// <summary>
 /// 查询问题中心
 /// </summary>
-public class ProblemcenteredDto
+public class ProblemcenteredDto: BasePageInput
 {
     /// <summary>
     /// 计划id
@@ -151,6 +151,10 @@ public class ProblemcenteredDto
     /// 问题评论集合
     /// </summary>
     public List<Entity.ProblemComment> Comments { get; set; }
+    public DateTime? ReportTimeMinimum { get; set; }
+    public DateTime? ReportTimeMax { get; set; }
+    public DateTime? HandleTimeMinimum { get; set; }
+    public DateTime? HandleTimeMax { get; set; }
 }
 
 public class DateTimes
