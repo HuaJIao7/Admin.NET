@@ -55,10 +55,10 @@ public class ProblemSuggestionsService : IDynamicApiController, ITransient
     // [AllowAnonymous]
     [DisplayName("查询问题建议表")]
     [ApiDescriptionSettings(Name = "GetConditionProblemSuggestions"), HttpGet]
-    public async Task<List<Entity.ProblemSuggestions>> GetConditionProblemSuggestions(string name)
+    public async Task<List<Entity.ProblemSuggestions>> GetConditionProblemSuggestions(long id)
     {
         var entity = await _problemSuggestionsDtoRep.AsQueryable()
-            .WhereIF(!name.IsNormalized(), x => x.Content.Contains(name))
+            .Where(x => x.ProbleId == id)
             .ToListAsync();
         return entity.Adapt<List<Entity.ProblemSuggestions>>();
     }

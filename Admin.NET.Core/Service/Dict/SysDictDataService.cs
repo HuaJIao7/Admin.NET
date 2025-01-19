@@ -114,6 +114,7 @@ public class SysDictDataService : IDynamicApiController, ITransient
 
         var dictTypeCode = await _sysDictDataRep.AsQueryable().ClearFilter().Where(u => u.DictTypeId == input.DictTypeId).Select(u => u.DictType.Code).FirstAsync();
         _sysCacheService.Remove($"{CacheConst.KeyDict}{dictTypeCode}");
+        input.IsDelete = false;
 
         await _sysDictDataRep.UpdateAsync(input.Adapt<SysDictData>());
     }

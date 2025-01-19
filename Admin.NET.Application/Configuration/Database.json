@@ -5,7 +5,7 @@
   // 数据库连接字符串参考地址：https://www.connectionstrings.com/
   "DbConnection": {
     "SuperAdminIgnoreIDeletedFilter": false, // 超级管理员是否忽略逻辑删除过滤器
-    "EnableConsoleSql": true, // 启用控制台打印SQL
+    //"EnableConsoleSql": true, // 启用控制台打印SQL
     "ConnectionConfigs": [
       {
         //"ConfigId": "1300000000001", // 默认库标识-禁止修改

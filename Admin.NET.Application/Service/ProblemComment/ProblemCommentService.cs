@@ -45,25 +45,33 @@ public class ProblemCommentService : IDynamicApiController, ITransient
     [ApiDescriptionSettings(Name = "AddProblemComment"), HttpPost]
     public async Task Add(UpdateProblemCommentInput input)
     {
-        var entity = input.Adapt<Entity.ProblemComment>();
-        var User = await _userRep.AsQueryable().ClearFilter().Where(x => x.Id == entity.UserId).FirstAsync();
-        var UserDept = await _orgRep.AsQueryable().ClearFilter().Where(x => x.Id == User.OrgId).FirstAsync();
-        var ProblemId = await _problemcenteredRep.AsQueryable().ClearFilter().Where(x => x.Id == entity.ProblemId).FirstAsync();
-        //用户id
-        entity.UserId = User.Id;
-        //用户名
-        entity.UserName = User.RealName;
-        //部门id
-        entity.DeptId = UserDept.Id;
-        //部门名称
-        entity.DeptName = UserDept.Name;
-        //评论内容
-        entity.Content = input.Content;
-        //评论时间
-        entity.CommentTime = DateTime.Now;
-        //问题id
-        entity.ProblemId = ProblemId.Id;
-        await _problemCommentRepository.InsertAsync(entity);
+        if (input.DeptId == null) return;
+        try
+        {
+            var entity = input.Adapt<Entity.ProblemComment>();
+            var User = await _userRep.AsQueryable().ClearFilter().Where(x => x.Id == entity.UserId).FirstAsync();
+            var UserDept = await _orgRep.AsQueryable().ClearFilter().Where(x => x.Id == User.OrgId).FirstAsync();
+            var ProblemId = await _problemcenteredRep.AsQueryable().ClearFilter().Where(x => x.Id == entity.ProblemId).FirstAsync();
+            //用户id
+            entity.UserId = User.Id;
+            //用户名
+            entity.UserName = User.RealName;
+            //部门id
+            entity.DeptId = UserDept.Id;
+            //部门名称
+            entity.DeptName = UserDept.Name;
+            //评论内容
+            entity.Content = input.Content;
+            //评论时间
+            entity.CommentTime = DateTime.Now;
+            //问题id
+            entity.ProblemId = ProblemId.Id;
+            await _problemCommentRepository.InsertAsync(entity);
+        }
+        catch
+        {
+            throw new Exception(input.ToString());
+        }
     }
 
     /// <summary>
@@ -87,10 +95,10 @@ public class ProblemCommentService : IDynamicApiController, ITransient
     [AllowAnonymous]
     [DisplayName("根据用户名查询评论信息")]
     [ApiDescriptionSettings(Name = "GetConditionProblemComment"), HttpGet]
-    public async Task<List<ProblemCommentDto>> GetConditionProblemComment(string name)
+    public async Task<List<ProblemCommentDto>> GetConditionProblemComment(long id)
     {
         var entity = await _problemCommentRepository.AsQueryable()
-            .WhereIF(!name.IsNullOrEmpty(), u => u.UserName.Contains(name))
+            .Where(u => u.ProblemId == id)
             .ToListAsync();
         return entity.Adapt<List<ProblemCommentDto>>();
     }

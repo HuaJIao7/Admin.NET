@@ -157,11 +157,6 @@ public class DeleteProblemCommentInput
 /// </summary>
 public class UpdateProblemCommentInput
 {
-    /// <summary>
-    /// 主键Id
-    /// </summary>    
-    [Required(ErrorMessage = "主键Id不能为空")]
-    public long? Id { get; set; }
 
     /// <summary>
     /// 评论人id
@@ -195,6 +190,11 @@ public class UpdateProblemCommentInput
     /// 评论时间
     /// </summary>    
     public DateTime? CommentTime { get; set; }
+
+    /// <summary>
+    /// 问题id
+    /// </summary>
+    public   long ProblemId { get; set; }
 
 }
 

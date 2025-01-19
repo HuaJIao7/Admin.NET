@@ -9,7 +9,7 @@ namespace Admin.NET.Core.Service;
 /// <summary>
 /// 系统用户服务 🧩
 /// </summary>
-[AllowAnonymous]
+// [AllowAnonymous]
 [ApiDescriptionSettings(Order = 490)]
 public class SysUserService : IDynamicApiController, ITransient
 {
@@ -55,7 +55,7 @@ public class SysUserService : IDynamicApiController, ITransient
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [DisplayName("获取用户分页列表")]
     public virtual async Task<SqlSugarPagedList<UserOutput>> Page(PageUserInput input)
     {
@@ -99,7 +99,7 @@ public class SysUserService : IDynamicApiController, ITransient
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [UnitOfWork]
     [ApiDescriptionSettings(Name = "Add"), HttpPost]
     [DisplayName("增加用户")]
@@ -138,7 +138,7 @@ public class SysUserService : IDynamicApiController, ITransient
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [NonAction]
     public virtual async Task<long> RegisterUser(AddUserInput input)
     {
@@ -178,7 +178,7 @@ public class SysUserService : IDynamicApiController, ITransient
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [UnitOfWork]
     [ApiDescriptionSettings(Name = "Update"), HttpPost]
     [DisplayName("更新用户")]
@@ -220,7 +220,7 @@ public class SysUserService : IDynamicApiController, ITransient
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     private async Task UpdateRoleAndExtOrg(AddUserInput input)
     {
         await GrantRole(new UserRoleInput { UserId = input.Id, RoleIdList = input.RoleIdList });
@@ -233,7 +233,7 @@ public class SysUserService : IDynamicApiController, ITransient
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [UnitOfWork]
     [ApiDescriptionSettings(Name = "Delete"), HttpPost]
     [DisplayName("删除用户")]
@@ -280,7 +280,7 @@ public class SysUserService : IDynamicApiController, ITransient
     /// </summary>
     /// <param name="Org"></param>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [ApiDescriptionSettings(Name = "GetListByOrgId"), HttpGet]
     [DisplayName("根据机构查询用户")]
     public async Task<List<SysUser>> GetListByOrgId(long Org)
@@ -298,7 +298,7 @@ public class SysUserService : IDynamicApiController, ITransient
     /// 查看用户基本信息 🔖
     /// </summary>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [DisplayName("查看用户基本信息")]
     public virtual async Task<SysUser> GetBaseInfo(string id)
     {
@@ -311,7 +311,7 @@ public class SysUserService : IDynamicApiController, ITransient
     /// 更新用户基本信息 🔖
     /// </summary>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [ApiDescriptionSettings(Name = "BaseInfo"), HttpPost]
     [DisplayName("更新用户基本信息")]
     public virtual async Task<int> UpdateBaseInfo(SysUser user)
@@ -325,7 +325,7 @@ public class SysUserService : IDynamicApiController, ITransient
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [UnitOfWork]
     [DisplayName("设置用户状态")]
     public virtual async Task<int> SetStatus(UserInput input)
@@ -371,7 +371,7 @@ public class SysUserService : IDynamicApiController, ITransient
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [UnitOfWork]
     [DisplayName("授权用户角色")]
     public async Task GrantRole(UserRoleInput input)
@@ -391,7 +391,7 @@ public class SysUserService : IDynamicApiController, ITransient
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [DisplayName("修改用户密码")]
     public virtual async Task<int> ChangePwd(ChangePwdInput input)
     {
@@ -444,7 +444,7 @@ public class SysUserService : IDynamicApiController, ITransient
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [DisplayName("重置用户密码")]
     public virtual async Task<string> ResetPwd(ResetPwdUserInput input)
     {
@@ -472,7 +472,7 @@ public class SysUserService : IDynamicApiController, ITransient
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [DisplayName("解除登录锁定")]
     public virtual async Task UnlockLogin(UnlockLoginInput input)
     {
@@ -495,13 +495,13 @@ public class SysUserService : IDynamicApiController, ITransient
     /// </summary>
     /// <param name="userId"></param>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [DisplayName("获取用户拥有角色集合")]
     public async Task<List<long>> GetOwnRoleList(long userId)
     {
         return await _sysUserRoleService.GetUserRoleIdList(userId);
     }
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [DisplayName("获取用户拥有角色集合")]
     public  async Task<SysUser> GetOwnRoleLists(long userId)
     {
@@ -520,7 +520,7 @@ public class SysUserService : IDynamicApiController, ITransient
     /// </summary>
     /// <param name="userId"></param>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [DisplayName("获取用户扩展机构集合")]
     public async Task<List<SysUserExtOrg>> GetOwnExtOrgList(long userId)
     {

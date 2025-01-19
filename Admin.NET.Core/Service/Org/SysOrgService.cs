@@ -39,7 +39,7 @@ public class SysOrgService : IDynamicApiController, ITransient
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [ApiDescriptionSettings(Name = "GetallSysOrg"), HttpGet]
     [DisplayName("查询全部机构表")]
     public async Task<List<SysOrg>> GetallSysOrg(string? name)
@@ -54,7 +54,7 @@ public class SysOrgService : IDynamicApiController, ITransient
     /// 获取机构列表 🔖
     /// </summary>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [DisplayName("获取机构列表")]
     public async Task<List<SysOrg>> GetList([FromQuery] OrgInput input)
     {
@@ -100,7 +100,7 @@ public class SysOrgService : IDynamicApiController, ITransient
     /// </summary>
     /// <param name="orgTree"></param>
     /// <param name="userOrgIdList"></param>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     private static void HandlerOrgTree(List<SysOrg> orgTree, List<long> userOrgIdList)
     {
         foreach (var org in orgTree)
@@ -116,7 +116,7 @@ public class SysOrgService : IDynamicApiController, ITransient
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [ApiDescriptionSettings(Name = "Add"), HttpPost]
     [DisplayName("增加机构")]
     public async Task<long> AddOrg(AddOrgInput input)
@@ -157,7 +157,7 @@ public class SysOrgService : IDynamicApiController, ITransient
     /// </summary>
     /// <param name="orgs"></param>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [NonAction]
     public async Task BatchAddOrgs(List<SysOrg> orgs)
     {
@@ -171,7 +171,7 @@ public class SysOrgService : IDynamicApiController, ITransient
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [UnitOfWork]
     [ApiDescriptionSettings(Name = "Update"), HttpPost]
     [DisplayName("更新机构")]
@@ -220,7 +220,7 @@ public class SysOrgService : IDynamicApiController, ITransient
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [UnitOfWork]
     [ApiDescriptionSettings(Name = "Delete"), HttpPost]
     [DisplayName("删除机构")]
@@ -308,7 +308,7 @@ public class SysOrgService : IDynamicApiController, ITransient
     /// 获取当前用户机构Id集合
     /// </summary>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [NonAction]
     public async Task<List<long>> GetUserOrgIdList()
     {
@@ -320,7 +320,7 @@ public class SysOrgService : IDynamicApiController, ITransient
     /// 根据指定用户Id获取机构Id集合
     /// </summary>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [NonAction]
     public async Task<List<long>> GetUserOrgIdList(long userId, long userOrgId)
     {
@@ -352,7 +352,7 @@ public class SysOrgService : IDynamicApiController, ITransient
     /// <param name="userId"></param>
     /// <param name="userOrgId">用户的机构Id</param>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     private async Task<List<long>> GetUserRoleOrgIdList(long userId, long userOrgId)
     {
         var roleList = await _sysUserRoleService.GetUserRoleList(userId);
@@ -368,7 +368,7 @@ public class SysOrgService : IDynamicApiController, ITransient
     /// <param name="userId"></param>
     /// <param name="role">角色代码</param>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [NonAction]
     public async Task<bool> GetUserHasRole(long userId, SysRole role)
     {
@@ -390,7 +390,7 @@ public class SysOrgService : IDynamicApiController, ITransient
     /// <param name="userId"></param>
     /// <param name="userOrgId">用户的机构Id</param>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     private async Task<List<long>> GetUserOrgIdList(List<SysRole> roleList, long userId, long userOrgId)
     {
         // 按最大范围策略设定(若同时拥有ALL和SELF权限，则结果ALL)
@@ -437,7 +437,7 @@ public class SysOrgService : IDynamicApiController, ITransient
     /// <param name="userOrgId">用户的机构Id</param>
     /// <param name="dataScope"></param>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     private async Task<List<long>> GetOrgIdListByDataScope(long userOrgId, int dataScope)
     {
         var orgId = userOrgId;//var orgId = _userManager.OrgId;
@@ -465,7 +465,7 @@ public class SysOrgService : IDynamicApiController, ITransient
     /// </summary>
     /// <param name="pid"></param>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [NonAction]
     public async Task<List<long>> GetChildIdListWithSelfById(long pid)
     {
