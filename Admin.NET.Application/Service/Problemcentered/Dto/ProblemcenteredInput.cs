@@ -16,6 +16,7 @@ namespace Admin.NET.Application.Service.Problemcentered.Dto;
 /// </summary>
 public class ProblemcenteredInput
 {
+    public virtual long Id { get; set; }
     /// <summary>
     /// 计划id
     /// </summary>
@@ -141,6 +142,7 @@ public class ProblemcenteredInput
     /// </summary>
     public virtual int? GiveUpCount { get; set; }
 
+    public bool Like { get; set; } = false;
     /// <summary>
     /// 问题建议集合
     /// </summary>

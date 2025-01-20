@@ -14,7 +14,7 @@ namespace Admin.NET.Application.Service.ProblemComment.Dto;
 /// <summary>
 /// 问题评论基础输入参数
 /// </summary>
-public class ProblemCommentBaseInput
+public class ProblemCommentBaseInput:Template
 {
     /// <summary>
     /// 主键Id

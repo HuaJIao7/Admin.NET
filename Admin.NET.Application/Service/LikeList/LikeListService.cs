@@ -39,6 +39,20 @@ public class LikeListSerivce : IDynamicApiController, ITransient
         _sqlSugarClient = sqlSugarClient;
         _userRep = userRep;
     }
+    /// <summary>
+    /// ID查询点赞列表
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [AllowAnonymous]
+    [DisplayName("ID查询点赞问题")]
+    [ApiDescriptionSettings(Name = "AllLikeList"), HttpGet]
+    public async Task<List<Entity.LikeList>> AllLikeList(long id)
+    {
+        var entity = await _likeList.AsQueryable().ClearFilter().Where(x => x.ProblemId == id).ToListAsync();
+        return entity;
+    }
+
 
     /// <summary>
     /// 添加点赞
@@ -51,30 +65,37 @@ public class LikeListSerivce : IDynamicApiController, ITransient
     [ApiDescriptionSettings(Name = "Add"), HttpPost]
     public async Task GiveUp(LikeListInput input)
     {
-        var asd = await _userRep.AsQueryable().Where(x => x.Id == input.UserId).ClearFilter().FirstAsync();
-        var dsa = await _problemcentered.AsQueryable().Where(x => x.Id == input.ProblemId).ClearFilter().FirstAsync();
-        if( asd == null || dsa == null) {return;}
+        //验证用户和问题中心是否存在
+        var asd = await _userRep.AsQueryable().Where(x => x.Id == input.UserId).ClearFilter().FirstAsync() ?? throw Oops.Oh(ErrorCodeEnum.YZ0001);
+        var dsa = await _problemcentered.AsQueryable().Where(x => x.Id == input.ProblemId).ClearFilter().FirstAsync() ?? throw Oops.Oh(ErrorCodeEnum.YZ0002);
 
-        var verify = await _likeList.AsQueryable().Where(x => x.ProblemId != input.ProblemId && x.UserId == input.UserId).ClearFilter().FirstAsync();
-        if (verify == null) { return; }
+        //验证点赞是否重复
+        var verify = await _likeList.AsQueryable().Where(x => x.ProblemId == input.ProblemId && x.UserId == input.UserId).ClearFilter().FirstAsync();
+        if (verify != null)
+        {
+            throw Oops.Oh(ErrorCodeEnum.YZ0003); // 有数据时抛出异常
+        }
 
+        //if (verify == null ) { return; }
         //var user = await _userRep.AsQueryable().ClearFilter().Where(x => x.Id == input.UserId).FirstAsync();
+
         var entity = input.Adapt<Entity.LikeList>();
         entity.ProblemId = input.ProblemId;
         entity.UserId = input.UserId;
         await _likeList.InsertAsync(entity);
 
+        var entitys = await _problemcentered.AsQueryable().ClearFilter().Where(x => x.Id == input.ProblemId).FirstAsync();
+        entitys.GiveUpCount += 1;
+        await _problemcentered.AsUpdateable(entitys).ExecuteCommandAsync();
 
 
-        //var entity = await _problemcentered.AsQueryable().ClearFilter().Where(x => x.Id == input.ProblemId).FirstAsync();
+
         //if (entity == null)
         //    throw Oops.Oh(ErrorCodeEnum.D1002);
 
         //var count = await _likeList.AsQueryable().ClearFilter().Where(x => x.ProblemId == input.ProblemId && x.UserId == input.UserId).CountAsync();
 
         //var user = await _userRep.AsQueryable().ClearFilter().Where(x => x.Id == input.UserId).FirstAsync();
-        //    entity.GiveUpCount += 1;
-        //    await _problemcentered.AsUpdateable(entity).ExecuteCommandAsync();
         //    var likeList = input.Adapt<Entity.LikeList>();
         //    likeList.UserName = user.RealName;
         //    likeList.ProblemId = input.ProblemId;

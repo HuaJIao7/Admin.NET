@@ -57,7 +57,7 @@ public class ProblemSuggestionsService : IDynamicApiController, ITransient
     [ApiDescriptionSettings(Name = "GetConditionProblemSuggestions"), HttpGet]
     public async Task<List<Entity.ProblemSuggestions>> GetConditionProblemSuggestions(long id)
     {
-        var entity = await _problemSuggestionsDtoRep.AsQueryable()
+        var entity = await _problemSuggestionsRep.AsQueryable()
             .Where(x => x.ProbleId == id)
             .ToListAsync();
         return entity.Adapt<List<Entity.ProblemSuggestions>>();

@@ -13,6 +13,24 @@ namespace Admin.NET.Core;
 [Description("系统错误码")]
 public enum ErrorCodeEnum
 {
+    [ErrorCodeItemMetadata("不存在")]
+    YZ0004,
+    /// <summary>
+    /// 用户错误
+    /// </summary>
+    [ErrorCodeItemMetadata("用户错误")]
+    YZ0001,
+    /// <summary>
+    /// 问题错误
+    /// </summary>
+    [ErrorCodeItemMetadata("问题错误")]
+    YZ0002,
+    /// <summary>
+    /// 存在
+    /// </summary>
+    [ErrorCodeItemMetadata("存在")]
+    YZ0003,
+
     /// <summary>
     /// 验证码错误
     /// </summary>

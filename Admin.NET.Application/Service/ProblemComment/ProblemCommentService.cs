@@ -24,6 +24,7 @@ public class ProblemCommentService : IDynamicApiController, ITransient
     private readonly SqlSugarRepository<SysUser> _userRep;
     private readonly SqlSugarRepository<SysOrg> _orgRep;
     private readonly SqlSugarRepository<Entity.Problemcentered> _problemcenteredRep;
+    private readonly SqlSugarRepository<ProblemCommentBaseInput> _problemCommentBaseInput;
 
     public ProblemCommentService(
         SqlSugarRepository<Entity.ProblemComment> problemCommentRepository,
@@ -49,9 +50,9 @@ public class ProblemCommentService : IDynamicApiController, ITransient
         try
         {
             var entity = input.Adapt<Entity.ProblemComment>();
-            var User = await _userRep.AsQueryable().ClearFilter().Where(x => x.Id == entity.UserId).FirstAsync();
-            var UserDept = await _orgRep.AsQueryable().ClearFilter().Where(x => x.Id == User.OrgId).FirstAsync();
-            var ProblemId = await _problemcenteredRep.AsQueryable().ClearFilter().Where(x => x.Id == entity.ProblemId).FirstAsync();
+            var User = await _userRep.AsQueryable().ClearFilter().Where(x => x.Id == entity.UserId).FirstAsync() ?? throw Oops.Oh(ErrorCodeEnum.YZ0001);
+            var UserDept = await _orgRep.AsQueryable().ClearFilter().Where(x => x.Id == User.OrgId).FirstAsync() ?? throw Oops.Oh(ErrorCodeEnum.YZ0004);
+            var ProblemId = await _problemcenteredRep.AsQueryable().ClearFilter().Where(x => x.Id == entity.ProblemId).FirstAsync() ?? throw Oops.Oh(ErrorCodeEnum.YZ0004);
             //用户id
             entity.UserId = User.Id;
             //用户名
@@ -68,9 +69,9 @@ public class ProblemCommentService : IDynamicApiController, ITransient
             entity.ProblemId = ProblemId.Id;
             await _problemCommentRepository.InsertAsync(entity);
         }
-        catch
+        catch (Exception e)
         {
-            throw new Exception(input.ToString());
+            Console.WriteLine(e.ToString());
         }
     }
 

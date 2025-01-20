@@ -34,6 +34,7 @@ public class ProblemcenteredService : IDynamicApiController, ITransient
     private readonly SqlSugarRepository<ProblemcenteredDto> _problemcenteredDto;
     private readonly SqlSugarRepository<DelectBaseStationInformationInput> _delectBaseStationInformationInput;
     private readonly SqlSugarRepository<UpdateBaseStationInformationInput> _updateBaseStationInformationInput;
+    private readonly SqlSugarRepository<Entity.LikeList> _likeListRepository;
     private readonly SqlSugarRepository<SysUser> _userRep;
     private readonly SqlSugarRepository<SysOrg> _orgRep;
     
@@ -55,7 +56,8 @@ public class ProblemcenteredService : IDynamicApiController, ITransient
         SqlSugarRepository<DelectBaseStationInformationInput> delectBaseStationInformationInput,
         SqlSugarRepository<SysUser> userRep, SqlSugarRepository<SysOrg> orgRep,
         //UploadOptions uploadOptions
-        IOptions<UploadOptions> uploadOptions, SqlSugarRepository<SysFile> sysFileRep
+        IOptions<UploadOptions> uploadOptions, SqlSugarRepository<SysFile> sysFileRep,
+        SqlSugarRepository<Entity.LikeList> likeListRepository
         )
     {
         _problemcenteredRepository = problemcenteredRepository;
@@ -68,6 +70,7 @@ public class ProblemcenteredService : IDynamicApiController, ITransient
         _orgRep = orgRep;
         _uploadOptions = uploadOptions.Value;
         _sysFileRep = sysFileRep;
+        _likeListRepository = likeListRepository;
     }
 
     /// <summary>
@@ -83,6 +86,126 @@ public class ProblemcenteredService : IDynamicApiController, ITransient
             .ClearFilter().ToListAsync();
         return entity;
     }
+
+    /// <summary>
+    /// 查询问题中心列表主键
+    /// </summary>
+    /// <returns></returns>
+    // [AllowAnonymous]
+    [DisplayName("查询问题中心列表主键")]
+    [ApiDescriptionSettings(Name = "ProblemcenteredId"), HttpGet]
+    public async Task<List<Entity.Problemcentered>> ProblemcenteredId(long id)
+    {
+        var entity = await _problemcenteredRepository.AsQueryable()
+            .Where(u => u.Id == id)
+            .ClearFilter().ToListAsync();
+        return entity;
+    }
+
+    [DisplayName("查看是否点赞")]
+    [ApiDescriptionSettings(Name = "GetAllProblemcentered"), HttpGet]
+    public async Task<List<Entity.Problemcentered>> GetAllProblemcentered(long id)
+    {
+        var entity = await _problemcenteredRepository.AsQueryable().ToListAsync();
+        return entity;
+    }
+    [DisplayName("查看是否点赞")]
+    [ApiDescriptionSettings(Name = "GetAllProblemcentered"), HttpPost]
+    public async Task<SqlSugarPagedList<ProblemcenteredInput>> GetAllProblemcentered(ProblemcenteredDto input, long userId)
+    {
+            // 获取所有的 Problemcentered 数据
+            var query = _problemcenteredRepository.AsQueryable().Select<Entity.Problemcentered>();
+
+            // 获取当前用户的所有点赞的 ProblemcenteredId
+            var likedProblemIds = await _likeListRepository.AsQueryable()
+                .Where(l => l.UserId == userId)
+                .Select(l => l.ProblemId)
+                .ToListAsync();
+
+            // 获取查询的结果，并映射到 ProblemcenteredInput
+            var problemcenteredInputs = await query
+                .OrderBuilder(input)
+                .Select(it => new ProblemcenteredInput
+                {
+                    Id = it.Id,
+                    Like =  likedProblemIds.Contains(it.Id) // 检查当前 id 是否在点赞列表中
+                })
+                .ToPagedListAsync(input.Page, input.PageSize);
+
+            return problemcenteredInputs;
+    }
+
+    //[DisplayName("查看是否点赞as")]
+    //[ApiDescriptionSettings(Name = "GetAllProblemcenteredas"), HttpPost]
+    //public async Task<SqlSugarPagedList<ProblemcenteredInput>> GetAllProblemcenteredas(ProblemcenteredDto input, long id)
+    //{
+    //    var query = _problemcenteredRepository.AsQueryable()
+    //        .Select<Entity.Problemcentered>();
+
+    //    return await query.OrderBuilder(input).Select(it => new ProblemcenteredInput
+    //    {
+    //        Id = it.Id,
+    //        Like = true
+
+    //    }).ToPagedListAsync(input.Page, input.PageSize);
+    //}
+
+
+    //public async Task<SqlSugarPagedList<ProblemcenteredInput>> GetAllProblemcenteredasx(ProblemcenteredDto input, long id)
+    //{
+    //    var query = _problemcenteredRepository.AsQueryable()
+    //        .Select<Entity.Problemcentered>();
+
+    //    // 假设 LikeList 表的实体类为 Entity.LikeList
+    //    var likesQuery = _likeListRepository.AsQueryable()
+    //        .Where(l => l.UserId == id) // 根据传入的用户id过滤
+    //        .Select(l => l.ProblemId); // 假设 LikeList 表里面有 ProblemcenteredId 字段
+
+    //    var problemCentereds = await query.OrderBuilder(input).ToListAsync();
+
+    //    var problemCenteredInputs = problemCentereds.Select(it => new ProblemcenteredInput
+    //    {
+    //        Id = it.Id,
+    //        Like = likesQuery.Contains(it.Id) // 如果 LikeList 中包含该 Id，Like 为 true，否则为 false
+    //    }).ToList();
+
+    //    return new SqlSugarPagedList<ProblemcenteredInput>(problemCenteredInputs, input.Page, input.PageSize);
+    //}
+
+    //public async Task<SqlSugarPagedList<ProblemcenteredInput>> GetAllProblaemcenteredas(ProblemcenteredDto input, long userId)
+    //{
+    //    try
+    //    {
+    //        // 获取所有的 Problemcentered 数据
+    //        var query = _problemcenteredRepository.AsQueryable().Select<Entity.Problemcentered>();
+
+    //        // 获取当前用户的所有点赞的 ProblemcenteredId
+    //        var likedProblemIds = await _likeListRepository.AsQueryable()
+    //            .Where(l => l.UserId == userId)
+    //            .Select(l => l.ProblemId)
+    //            .ToListAsync();
+
+    //        // 获取查询的结果，并映射到 ProblemcenteredInput
+    //        var problemcenteredInputs = await query
+    //            .OrderBuilder(input)
+    //            .Select(it => new ProblemcenteredInput
+    //            {
+    //                Id = it.Id,
+    //                Like = likedProblemIds.Contains(it.Id) // 检查当前 id 是否在点赞列表中
+    //            })
+    //            .ToPagedListAsync(input.Page, input.PageSize);
+
+    //        return problemcenteredInputs;
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        // 记录错误或根据需要处理异常
+    //        throw new Exception("Failed to get problem centered data", ex);
+    //    }
+    //}
+
+
+
 
     /// <summary>
     /// 模糊查询问题中心列表
