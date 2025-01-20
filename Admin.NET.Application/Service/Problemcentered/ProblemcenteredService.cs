@@ -118,9 +118,9 @@ public class ProblemcenteredService : IDynamicApiController, ITransient
 
             // 获取当前用户的所有点赞的 ProblemcenteredId
             var likedProblemIds = await _likeListRepository.AsQueryable()
-                .Where(l => l.UserId == userId)
-                .Select(l => l.ProblemId)
-                .ToListAsync();
+                .Where(l => l.UserId == userId)//查询当前用户点赞的记录
+                .Select(l => l.ProblemId)//获取全部
+                .ToListAsync(); //获取点赞的 ProblemcenteredId 列表
 
             // 获取查询的结果，并映射到 ProblemcenteredInput
             var problemcenteredInputs = await query
@@ -131,7 +131,6 @@ public class ProblemcenteredService : IDynamicApiController, ITransient
                     Like =  likedProblemIds.Contains(it.Id) // 检查当前 id 是否在点赞列表中
                 })
                 .ToPagedListAsync(input.Page, input.PageSize);
-
             return problemcenteredInputs;
     }
 
