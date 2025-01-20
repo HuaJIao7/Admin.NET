@@ -40,6 +40,7 @@ public class BaseStationInformationService : IDynamicApiController, ITransient
         _baseStationInformationdto = baseStationInformationdto;
     }
 
+    
     /// <summary>
     /// 添加基站信息
     /// </summary>
@@ -53,17 +54,26 @@ public class BaseStationInformationService : IDynamicApiController, ITransient
         var e = await _baseStationInformation.AsQueryable().ClearFilter().ToListAsync();
         int count = e.Count+1;
 
-        var entity = input.Adapt<Entity.BaseStationInformation>();
-        entity.Id = count;
-        entity.BaseStationCode = input.BaseStationCode;
-        entity.BaseStationName = input.BaseStationName;
-        entity.X_Coordinate = input.X_Coordinate;
-        entity.Y_Coordinate = input.Y_Coordinate;
-        entity.Z_Coordinate = input.Z_Coordinate;
-        entity.LocationAnnotation = input.LocationAnnotation;
-        await _baseStationInformation.InsertAsync(entity);
+        try
+        {
+            var entity = input.Adapt<Entity.BaseStationInformation>();
+            entity.Id = count;
+            entity.BaseStationCode = input.BaseStationCode;
+            entity.BaseStationName = input.BaseStationName;
+            entity.X_Coordinate = input.X_Coordinate;
+            entity.Y_Coordinate = input.Y_Coordinate;
+            entity.Z_Coordinate = input.Z_Coordinate;
+            entity.LocationAnnotation = input.LocationAnnotation;
+            await _baseStationInformation.InsertAsync(entity);
+        }
+        catch (Exception exception)
+        {
+            Console.WriteLine(exception);
+            throw;
+        }
     }
 
+    
     /// <summary>
     /// 查询全部基站信息
     /// </summary>
@@ -82,12 +92,9 @@ public class BaseStationInformationService : IDynamicApiController, ITransient
             .WhereIF(!string.IsNullOrWhiteSpace(input.LocationAnnotation), u => u.LocationAnnotation.Contains(input.LocationAnnotation.Trim()))
             .Select<Entity.BaseStationInformation>();
         return await query.OrderBuilder(input).ToPageListAsync(input.Page, input.PageSize);
-
-        var entity = await _baseStationInformation.AsQueryable().ClearFilter().ToListAsync();
-        return entity;
     }
-
-
+    
+    
     /// <summary>
     /// 模糊查询基站信息
     /// </summary>
@@ -116,6 +123,7 @@ public class BaseStationInformationService : IDynamicApiController, ITransient
         //return entity;
     }
 
+    
     /// <summary>
     /// 修改基站信息
     /// </summary>
@@ -126,10 +134,18 @@ public class BaseStationInformationService : IDynamicApiController, ITransient
     public async Task Update(UpdateBaseStationInformationInput input)
     {
         //修改全部字段
-        var entity = input.Adapt<Entity.BaseStationInformation>();
-        await _baseStationInformation.AsUpdateable(entity)
-        .Where(it => it.Id == entity.Id)
-        .ExecuteCommandAsync();
+        try
+        {
+            var entity = input.Adapt<Entity.BaseStationInformation>();
+            await _baseStationInformation.AsUpdateable(entity)
+            .Where(it => it.Id == entity.Id)
+            .ExecuteCommandAsync();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 
 

@@ -27,6 +27,7 @@ public class UserInformationService : IDynamicApiController, ITransient
         _userinformetion = userinformetion;
     }
 
+    #region 新增用户信息
     /// <summary>
     /// 查询用户信息表
     /// </summary>
@@ -47,22 +48,23 @@ public class UserInformationService : IDynamicApiController, ITransient
             .WhereIF(input.IsItLeader != null, u => u.IsItLeader == input.IsItLeader)
             .WhereIF(input.IsItSpecialPersonnel != null, u => u.IsItSpecialPersonnel == input.IsItSpecialPersonnel);
         return await quert.OrderBuilder(input).ToPageListAsync(input.Page, input.PageSize);
-
-
-
-        var enttity = await _userinformetion.AsQueryable().ClearFilter().ToListAsync();
-        return enttity;
     }
+    
+    #endregion
 
+    #region 分页查询用户信息表
     /// <summary>
     /// 查询用户信息表
     /// </summary>
+    /// <param name="input"></param>
     /// <param name="name"></param>
+    /// <param name="personnelCardCode"></param>
+    /// <param name="jobTypes"></param>
     /// <returns></returns>
     // [AllowAnonymous]
     [DisplayName("查询用户信息表")]
     [ApiDescriptionSettings(Name = "GetConditionUserInformation"), HttpPost]
-    public async Task<SqlSugarPagedList<Entity.UserInformation>> GetConditionUserInformation(UserInformationInput input, string name ,string PersonnelCardCode ,string JobTypes)
+    public async Task<SqlSugarPagedList<Entity.UserInformation>> GetConditionUserInformation(UserInformationInput input, string name ,string personnelCardCode ,string jobTypes)
     {
         var query = _userinformetion.AsQueryable()
             .WhereIF(!string.IsNullOrWhiteSpace(input.PersonnelCardCode), u => u.PersonnelCardCode.Contains(input.PersonnelCardCode.Trim()))
@@ -75,16 +77,10 @@ public class UserInformationService : IDynamicApiController, ITransient
             .WhereIF(input.IsItLeader != null, u => u.IsItLeader == input.IsItLeader)
             .WhereIF(input.IsItSpecialPersonnel != null, u => u.IsItSpecialPersonnel == input.IsItSpecialPersonnel)
             .WhereIF(!name.IsNullOrEmpty(), u => u.Name == name)
-            .WhereIF(!name.IsNullOrEmpty(), u => u.PersonnelCardCode == PersonnelCardCode)
-            .WhereIF(!name.IsNullOrEmpty(), u => u.JobTypes == JobTypes);
+            .WhereIF(!name.IsNullOrEmpty(), u => u.PersonnelCardCode == personnelCardCode)
+            .WhereIF(!name.IsNullOrEmpty(), u => u.JobTypes == jobTypes);
         return await query.OrderBuilder(input).ToPagedListAsync(input.Page, input.PageSize);
-
-        //query.OrderBuilder(input).ToPagedListAsync(input.Page, input.PageSize);
-
-        //var enttity = await _userinformetion.AsQueryable()
-        //    .ClearFilter()
-        //    .WhereIF(!name.IsNullOrEmpty(), u => u.Name == name || u.PersonnelCardCode == PersonnelCardCode || u.JobTypes == JobTypes)
-        //    .ToListAsync();
-        //return enttity;
     }
+    
+    #endregion
 }
