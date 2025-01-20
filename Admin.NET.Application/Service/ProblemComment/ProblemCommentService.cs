@@ -26,9 +26,13 @@ public class ProblemCommentService : IDynamicApiController, ITransient
     private readonly SqlSugarRepository<Entity.Problemcentered> _problemcenteredRep;
     private readonly SqlSugarRepository<ProblemCommentBaseInput> _problemCommentBaseInput;
 
+    #region 实例化
     public ProblemCommentService(
         SqlSugarRepository<Entity.ProblemComment> problemCommentRepository,
-        SqlSugarRepository<ProblemCommentDto> problemCommentDto, SqlSugarRepository<SysOrg> orgRep, SqlSugarRepository<SysUser> userRep, SqlSugarRepository<Entity.Problemcentered> problemcenteredRep)
+        SqlSugarRepository<ProblemCommentDto> problemCommentDto, 
+        SqlSugarRepository<SysOrg> orgRep, 
+        SqlSugarRepository<SysUser> userRep, 
+        SqlSugarRepository<Entity.Problemcentered> problemcenteredRep)
     {
         _problemCommentRepository = problemCommentRepository;
         _problemCommentDto = problemCommentDto;
@@ -36,12 +40,14 @@ public class ProblemCommentService : IDynamicApiController, ITransient
         _userRep = userRep;
         _problemcenteredRep = problemcenteredRep;
     }
-
+    #endregion
+    
+    #region 添加评论
     /// <summary>
     /// 添加评论
     /// </summary>
     /// <param name="input"></param>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [DisplayName("添加评论")]
     [ApiDescriptionSettings(Name = "AddProblemComment"), HttpPost]
     public async Task Add(UpdateProblemCommentInput input)
@@ -50,23 +56,17 @@ public class ProblemCommentService : IDynamicApiController, ITransient
         try
         {
             var entity = input.Adapt<Entity.ProblemComment>();
-            var User = await _userRep.AsQueryable().ClearFilter().Where(x => x.Id == entity.UserId).FirstAsync() ?? throw Oops.Oh(ErrorCodeEnum.YZ0001);
-            var UserDept = await _orgRep.AsQueryable().ClearFilter().Where(x => x.Id == User.OrgId).FirstAsync() ?? throw Oops.Oh(ErrorCodeEnum.YZ0004);
-            var ProblemId = await _problemcenteredRep.AsQueryable().ClearFilter().Where(x => x.Id == entity.ProblemId).FirstAsync() ?? throw Oops.Oh(ErrorCodeEnum.YZ0004);
-            //用户id
-            entity.UserId = User.Id;
-            //用户名
-            entity.UserName = User.RealName;
-            //部门id
-            entity.DeptId = UserDept.Id;
-            //部门名称
-            entity.DeptName = UserDept.Name;
-            //评论内容
-            entity.Content = input.Content;
-            //评论时间
-            entity.CommentTime = DateTime.Now;
-            //问题id
-            entity.ProblemId = ProblemId.Id;
+            var user = await _userRep.AsQueryable().ClearFilter().Where(x => x.Id == entity.UserId).FirstAsync() ?? throw Oops.Oh(ErrorCodeEnum.YZ0001);
+            var userDept = await _orgRep.AsQueryable().ClearFilter().Where(x => x.Id == user.OrgId).FirstAsync() ?? throw Oops.Oh(ErrorCodeEnum.YZ0004);
+            var problemId = await _problemcenteredRep.AsQueryable().ClearFilter().Where(x => x.Id == entity.ProblemId).FirstAsync() ?? throw Oops.Oh(ErrorCodeEnum.YZ0004);
+            
+            entity.UserId = user.Id;//用户id
+            entity.UserName = user.RealName;//用户名
+            entity.DeptId = userDept.Id;//部门id
+            entity.DeptName = userDept.Name;//部门名称
+            entity.Content = input.Content;//评论内容
+            entity.CommentTime = DateTime.Now;//评论时间
+            entity.ProblemId = problemId.Id;//问题id
             await _problemCommentRepository.InsertAsync(entity);
         }
         catch (Exception e)
@@ -74,12 +74,14 @@ public class ProblemCommentService : IDynamicApiController, ITransient
             Console.WriteLine(e.ToString());
         }
     }
+    #endregion
 
+    #region 查询全部评论信息
     /// <summary>
     /// 查询全部评论信息
     /// </summary>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [DisplayName("查询全部评论信息")]
     [ApiDescriptionSettings(Name = "GetProblemComment"), HttpGet]
     public async Task<List<Entity.ProblemComment>> GetProblemComment()
@@ -87,13 +89,15 @@ public class ProblemCommentService : IDynamicApiController, ITransient
         var entity = await _problemCommentRepository.AsQueryable().ClearFilter().ToListAsync();
         return entity;
     }
+    #endregion
 
+    #region 根据用户名查询评论信息
     /// <summary>
     /// 根据用户名查询评论信息
     /// </summary>
-    /// <param name="name"></param>
+    /// <param name="id"></param>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [DisplayName("根据用户名查询评论信息")]
     [ApiDescriptionSettings(Name = "GetConditionProblemComment"), HttpGet]
     public async Task<List<ProblemCommentDto>> GetConditionProblemComment(long id)
@@ -103,12 +107,14 @@ public class ProblemCommentService : IDynamicApiController, ITransient
             .ToListAsync();
         return entity.Adapt<List<ProblemCommentDto>>();
     }
+    #endregion
 
+    #region 修改评论信息
     /// <summary>
     /// 修改评论信息
     /// </summary>
     /// <param name="input"></param>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [DisplayName("修改评论信息")]
     [ApiDescriptionSettings(Name = "GetProblemCommentById"), HttpPost]
     public async Task UpdateProblemComment(Entity.ProblemComment input)
@@ -117,13 +123,15 @@ public class ProblemCommentService : IDynamicApiController, ITransient
         await _problemCommentRepository.AsUpdateable(entity).ExecuteCommandAsync();
         //await _problemCommentRepository.UpdateAsync(entity);
     }
+    #endregion
 
+    #region 删除评论信息
     /// <summary>
     /// 删除评论信息
     /// </summary>
     /// <param name="input"></param>
     /// <exception cref="AppFriendlyException"></exception>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [DisplayName("删除评论信息")]
     [ApiDescriptionSettings(Name = "DeleteProblemComment"), HttpPost]
     public async Task DeleteProblemComment(DeleteProblemCommentInput input)
@@ -132,18 +140,20 @@ public class ProblemCommentService : IDynamicApiController, ITransient
         await _problemCommentRepository.FakeDeleteAsync(entity); //假删除
         //await _problemCommentRepository.DeleteAsync(entity); // 假删除
     }
+    #endregion
 
+    #region 批量删除评论信息
     /// <summary>
     /// 批量删除评论信息
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [DisplayName("批量删除评论信息")]
     [ApiDescriptionSettings(Name = "BatchDelete"), HttpPost]
     public async Task<int> BatchDelete([Required(ErrorMessage = "主键列表不能为空")] List<DeleteProblemCommentInput> input)
     {
-        var entity = Expressionable.Create<Entity.ProblemComment>();
+        var entity = Expressionable.Create<Entity.ProblemComment>() ?? throw Oops.Oh(ErrorCodeEnum.D1002);
         foreach (var x in input)
         {
             entity = entity.Or(it => it.Id == x.Id);
@@ -151,4 +161,5 @@ public class ProblemCommentService : IDynamicApiController, ITransient
         var list = await _problemCommentRepository.AsQueryable().Where(entity.ToExpression()).ToListAsync();
         return await _problemCommentRepository.FakeDeleteAsync(list);
     }
+    #endregion
 }

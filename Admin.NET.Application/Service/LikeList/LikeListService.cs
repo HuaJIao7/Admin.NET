@@ -30,7 +30,12 @@ public class LikeListSerivce : IDynamicApiController, ITransient
     private readonly SqlSugarRepository<SysUser> _userRep;
 
     public LikeListSerivce(
-        SqlSugarRepository<Entity.LikeList> likeList, SqlSugarRepository<LikeListDto> likeListDto, SqlSugarRepository<LikeListInput> likeListInput, SqlSugarRepository<Entity.Problemcentered> problemcentered, ISqlSugarClient sqlSugarClient, SqlSugarRepository<SysUser> userRep)
+        SqlSugarRepository<Entity.LikeList> likeList,
+        SqlSugarRepository<LikeListDto> likeListDto, 
+        SqlSugarRepository<LikeListInput> likeListInput, 
+        SqlSugarRepository<Entity.Problemcentered> problemcentered, 
+        ISqlSugarClient sqlSugarClient, 
+        SqlSugarRepository<SysUser> userRep)
     {
         _likeList = likeList;
         _likeListDto = likeListDto;
@@ -44,7 +49,7 @@ public class LikeListSerivce : IDynamicApiController, ITransient
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [DisplayName("ID查询点赞问题")]
     [ApiDescriptionSettings(Name = "AllLikeList"), HttpGet]
     public async Task<List<Entity.LikeList>> AllLikeList(long id)
@@ -79,31 +84,22 @@ public class LikeListSerivce : IDynamicApiController, ITransient
         //if (verify == null ) { return; }
         //var user = await _userRep.AsQueryable().ClearFilter().Where(x => x.Id == input.UserId).FirstAsync();
 
-        var entity = input.Adapt<Entity.LikeList>();
-        entity.ProblemId = input.ProblemId;
-        entity.UserId = input.UserId;
-        await _likeList.InsertAsync(entity);
+        try
+        {
+            var entity = input.Adapt<Entity.LikeList>();
+            entity.ProblemId = input.ProblemId;
+            entity.UserId = input.UserId;
+            await _likeList.InsertAsync(entity);
 
-        var entitys = await _problemcentered.AsQueryable().ClearFilter().Where(x => x.Id == input.ProblemId).FirstAsync();
-        entitys.GiveUpCount += 1;
-        await _problemcentered.AsUpdateable(entitys).ExecuteCommandAsync();
-
-
-
-        //if (entity == null)
-        //    throw Oops.Oh(ErrorCodeEnum.D1002);
-
-        //var count = await _likeList.AsQueryable().ClearFilter().Where(x => x.ProblemId == input.ProblemId && x.UserId == input.UserId).CountAsync();
-
-        //var user = await _userRep.AsQueryable().ClearFilter().Where(x => x.Id == input.UserId).FirstAsync();
-        //    var likeList = input.Adapt<Entity.LikeList>();
-        //    likeList.UserName = user.RealName;
-        //    likeList.ProblemId = input.ProblemId;
-        //    await _likeList.InsertAsync(likeList);
-
-        //if (count == 0)
-        //{
-        //}
+            var entitys = await _problemcentered.AsQueryable().ClearFilter().Where(x => x.Id == input.ProblemId).FirstAsync();
+            entitys.GiveUpCount += 1;
+            await _problemcentered.AsUpdateable(entitys).ExecuteCommandAsync();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 
     /// <summary>
@@ -117,12 +113,19 @@ public class LikeListSerivce : IDynamicApiController, ITransient
     public async Task CancelLikes(LikeListInput input)
     {
         var entity = await _likeList.AsQueryable().ClearFilter().Where(x => x.ProblemId == input.ProblemId && x.UserId == input.UserId).FirstAsync();
-
         var problem = await _problemcentered.AsQueryable().ClearFilter().Where(x => x.Id == entity.ProblemId).FirstAsync();
-        problem.GiveUpCount -= 1;
-        await _problemcentered.AsUpdateable(problem)
-            .ExecuteCommandAsync();
-        await _likeList.DeleteAsync(entity);   //真删除
+        try
+        {
+            problem.GiveUpCount -= 1;
+            await _problemcentered.AsUpdateable(problem).ExecuteCommandAsync();
+            await _likeList.DeleteAsync(entity);   //真删除
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+        
     }
 
     /// <summary>

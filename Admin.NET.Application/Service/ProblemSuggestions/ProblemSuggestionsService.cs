@@ -33,10 +33,11 @@ public class ProblemSuggestionsService : IDynamicApiController, ITransient
         _problemSuggestionsDtoRep = problemSuggestionsDtoRep;
     }
 
+    #region 查询问题建议表
+
     /// <summary>
     /// 查询问题建议表 🔖
     /// </summary>
-    /// <param name="input"></param>
     /// <returns></returns>
     // [AllowAnonymous]
     [DisplayName("查询问题建议表")]
@@ -46,23 +47,34 @@ public class ProblemSuggestionsService : IDynamicApiController, ITransient
         var entity = await _problemSuggestionsRep.AsQueryable().ClearFilter().ToListAsync();
         return entity;
     }
+    #endregion
 
+    #region 查询问题建议表
     /// <summary>
     /// 查询问题建议表 🔖
     /// </summary>
-    /// <param name="input"></param>
     /// <returns></returns>
     // [AllowAnonymous]
     [DisplayName("查询问题建议表")]
     [ApiDescriptionSettings(Name = "GetConditionProblemSuggestions"), HttpGet]
     public async Task<List<Entity.ProblemSuggestions>> GetConditionProblemSuggestions(long id)
     {
-        var entity = await _problemSuggestionsRep.AsQueryable()
-            .Where(x => x.ProbleId == id)
-            .ToListAsync();
-        return entity.Adapt<List<Entity.ProblemSuggestions>>();
+        try
+        {
+            var entity = await _problemSuggestionsRep.AsQueryable()
+                .Where(x => x.ProbleId == id)
+                .ToListAsync();
+            return entity.Adapt<List<Entity.ProblemSuggestions>>();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
+    #endregion
 
+    #region 获取问题建议表详情
     /// <summary>
     /// 获取问题建议表详情 ℹ️
     /// </summary>
@@ -73,12 +85,24 @@ public class ProblemSuggestionsService : IDynamicApiController, ITransient
     [ApiDescriptionSettings(Name = "Detail"), HttpGet]
     public async Task<List<Entity.ProblemSuggestions>> Detail([FromQuery] QueryByIdProblemSuggestionsInput input)
     {
-        var entity = await _problemSuggestionsRep.AsQueryable()
-            .Where(u => u.ProbleId == input.Id)
-            .ClearFilter().ToListAsync();
-        return entity;
+        try
+        {
+            var entity = await _problemSuggestionsRep.AsQueryable()
+                .Where(u => u.ProbleId == input.Id)
+                .ClearFilter().ToListAsync();
+            return entity;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+        
     }
+    
+    #endregion
 
+    #region 增加问题建议表
     /// <summary>
     /// 增加问题建议表 ➕
     /// </summary>
@@ -89,32 +113,40 @@ public class ProblemSuggestionsService : IDynamicApiController, ITransient
     [ApiDescriptionSettings(Name = "Add"), HttpPost]
     public async Task Add(AddProblemSuggestionsInput input)
      {
-        var e = await _problemSuggestionsRep.AsQueryable().ClearFilter().ToListAsync();
-        int count = e.Count + 1;
+         try
+         {
+            var e = await _problemSuggestionsRep.AsQueryable().ClearFilter().ToListAsync();
+            int count = e.Count + 1;
 
-        var entitys = input.Adapt<Entity.ProblemSuggestions>();
-        //var user = await _userRep.AsQueryable().ClearFilter().Where(x => x.Id == entitys.UserId).FirstAsync();
-        //var userDept = await _orgRep.AsQueryable().ClearFilter().Where(x => x.Id == user.OrgId).FirstAsync();
-        //if (user == null || userDept == null) {
-        //    return;
-        //}
-        entitys.Id = count;
-        entitys.ProbleId = input.ProbleId;
-        entitys.UserId = input.UserId;
-        entitys.UserName = input.UserName;
-        entitys.UserDeptId = input.UserDeptId;
-        entitys.UserDeptName = input.UserDeptName;
-        entitys.Content = input.Content;
-        entitys.Status = input.Status;
-        entitys.ProblemId = input.ProblemId;
-        entitys.DeptId = input.DeptId;
-        entitys.DeptName = input.DeptName;
-        entitys.Floag = input.Floag;
-        entitys.PublishTime = DateTime.Now;
-        await _problemSuggestionsRep.InsertAsync(entitys);
+            var entitys = input.Adapt<Entity.ProblemSuggestions>();
+            //var user = await _userRep.AsQueryable().ClearFilter().Where(x => x.Id == entitys.UserId).FirstAsync();
+            //var userDept = await _orgRep.AsQueryable().ClearFilter().Where(x => x.Id == user.OrgId).FirstAsync();
+            //if (user == null || userDept == null) {
+            //    return;
+            //}
+            entitys.Id = count;
+            entitys.ProbleId = input.ProbleId;
+            entitys.UserId = input.UserId;
+            entitys.UserName = input.UserName;
+            entitys.UserDeptId = input.UserDeptId;
+            entitys.UserDeptName = input.UserDeptName;
+            entitys.Content = input.Content;
+            entitys.Status = input.Status;
+            entitys.ProblemId = input.ProblemId;
+            entitys.DeptId = input.DeptId;
+            entitys.DeptName = input.DeptName;
+            entitys.Floag = input.Floag;
+            entitys.PublishTime = DateTime.Now;
+            await _problemSuggestionsRep.InsertAsync(entitys);
+         }
+         catch (Exception exception)
+         {
+             Console.WriteLine(exception);
+             throw;
+         }
 
 
-        //var entity = input.Adapt<Entity.ProblemSuggestions>();
+         //var entity = input.Adapt<Entity.ProblemSuggestions>();
         //var User = await _userRep.AsQueryable().ClearFilter().Where(x => x.Id == entity.UserId).FirstAsync();
         //var UserDept = await _orgRep.AsQueryable().ClearFilter().Where(x => x.Id == User.OrgId).FirstAsync();
 
@@ -124,7 +156,9 @@ public class ProblemSuggestionsService : IDynamicApiController, ITransient
         //entity.PublishTime = DateTime.Now;
         //return await _problemSuggestionsRep.InsertAsync(entity) ? entity.Id : 0;
     }
+    #endregion
 
+    #region 删除问题建议表 
     /// <summary>
     /// 是否采纳建议 ✏️
     /// </summary>
@@ -135,19 +169,28 @@ public class ProblemSuggestionsService : IDynamicApiController, ITransient
     [ApiDescriptionSettings(Name = "Adopt"), HttpPost]
     public async Task Adopt(UpdateProblemSuggestionsInput input)
     {
-        var model = await _problemSuggestionsRep.AsQueryable().ClearFilter().Where(x => x.Id == input.Id).FirstAsync();
-        if (model == null)
-            throw Oops.Oh(ErrorCodeEnum.D1002);
+        try
+        {
+            var model = await _problemSuggestionsRep.AsQueryable().ClearFilter().Where(x => x.Id == input.Id).FirstAsync();
+            if (model == null) throw Oops.Oh(ErrorCodeEnum.D1002);
 
-        var entity = input.Adapt<Entity.ProblemSuggestions>();
-        await _problemSuggestionsRep.AsUpdateable(entity)
-            .Where(it => it.Id == entity.Id).ExecuteCommandAsync();
+            var entity = input.Adapt<Entity.ProblemSuggestions>();
+            await _problemSuggestionsRep.AsUpdateable(entity)
+                .Where(it => it.Id == entity.Id).ExecuteCommandAsync();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
 
        // model.Status = input.Status;
        // await _problemSuggestionsRep.AsUpdateable(model)
        //.ExecuteCommandAsync();
     }
+    #endregion
 
+    #region 更新问题建议表
     /// <summary>
     /// 更新问题建议表 ✏️
     /// </summary>
@@ -158,11 +201,21 @@ public class ProblemSuggestionsService : IDynamicApiController, ITransient
     [ApiDescriptionSettings(Name = "Update"), HttpPost]
     public async Task Update(UpdateProblemSuggestionsInput input)
     {
-        var entity = input.Adapt<Entity.ProblemSuggestions>();
-        await _problemSuggestionsRep.AsUpdateable(entity)
-        .ExecuteCommandAsync();
+        try
+        {
+            var entity = input.Adapt<Entity.ProblemSuggestions>();
+            await _problemSuggestionsRep.AsUpdateable(entity)
+            .ExecuteCommandAsync();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
+    #endregion
 
+    #region 删除问题建议表
     /// <summary>
     /// 删除问题建议表 ❌
     /// </summary>
@@ -173,8 +226,17 @@ public class ProblemSuggestionsService : IDynamicApiController, ITransient
     [ApiDescriptionSettings(Name = "Delete"), HttpPost]
     public async Task Delete(DeleteProblemSuggestionsInput input)
     {
-        var entity = await _problemSuggestionsRep.GetFirstAsync(u => u.Id == input.Id) ?? throw Oops.Oh(ErrorCodeEnum.D1002);
-        await _problemSuggestionsRep.FakeDeleteAsync(entity);   //假删除
-        //await _problemSuggestionsRep.DeleteAsync(entity);   //真删除
+        try
+        {
+            var entity = await _problemSuggestionsRep.GetFirstAsync(u => u.Id == input.Id) ?? throw Oops.Oh(ErrorCodeEnum.D1002);
+            await _problemSuggestionsRep.FakeDeleteAsync(entity);   //假删除
+            //await _problemSuggestionsRep.DeleteAsync(entity);   //真删除
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
+    #endregion
 }

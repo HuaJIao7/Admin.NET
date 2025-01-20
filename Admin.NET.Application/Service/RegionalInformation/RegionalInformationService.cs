@@ -42,6 +42,7 @@ public class RegionalInformationService : IDynamicApiController, ITransient
         _regionalInformationInput = regionalInformationInput;
     }
 
+    #region 添加区域信息
     /// <summary>
     /// 添加区域信息
     /// </summary>
@@ -51,14 +52,25 @@ public class RegionalInformationService : IDynamicApiController, ITransient
     [ApiDescriptionSettings(Name = "Add"), HttpPost]
     public async Task Add(RegionalInformationInput input)
     {
-        var entity = input.Adapt<Entity.RegionalInformation>();
-        entity.RegionalType = input.RegionalType;
-        entity.RegionalCode = input.RegionalCode;
-        entity.AuthorizedPersonnel = input.AuthorizedPersonnel;
-        entity.Country = input.Country;
-        await _regionalInformation.InsertAsync(entity);
+        try
+        {
+            var entity = input.Adapt<Entity.RegionalInformation>();
+            entity.RegionalType = input.RegionalType;
+            entity.RegionalCode = input.RegionalCode;
+            entity.AuthorizedPersonnel = input.AuthorizedPersonnel;
+            entity.Country = input.Country;
+            await _regionalInformation.InsertAsync(entity);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
+    
+    #endregion
 
+    #region 修改区域信息
     /// <summary>
     /// 查询全部区域信息
     /// </summary>
@@ -79,33 +91,36 @@ public class RegionalInformationService : IDynamicApiController, ITransient
         //return entity;
     }
     
+    #endregion
+    
+    #region 修改区域信息
     /// <summary>
     /// 模糊查询区域信息
     /// </summary>
     /// <param name="input"></param>
+    /// <param name="name"></param>
+    /// <param name="regionalType"></param>
+    /// <param name="regionalCode"></param>
     /// <returns></returns>
     // [AllowAnonymous]
     [DisplayName("模糊查询区域信息")]
     [ApiDescriptionSettings(Name = "GetConditionRegionalInformation"), HttpPost]
-    public async Task<SqlSugarPagedList<Entity.RegionalInformation>> GetConditionRegionalInformation(RegionalInformationInput input, string Name,string RegionalType,string RegionalCode)
+    public async Task<SqlSugarPagedList<Entity.RegionalInformation>> GetConditionRegionalInformation(RegionalInformationInput input, string name,string regionalType,string regionalCode)
     {
         var query = _regionalInformation.AsQueryable()
-            .WhereIF(!string.IsNullOrEmpty(Name), u => u.Country.Contains(Name))
-            .WhereIF(!string.IsNullOrEmpty(RegionalType), u => u.RegionalType.Contains(RegionalType))
-            .WhereIF(!string.IsNullOrEmpty(RegionalCode), u => u.RegionalCode.Contains(RegionalCode))
+            .WhereIF(!string.IsNullOrEmpty(name), u => u.Country.Contains(name))
+            .WhereIF(!string.IsNullOrEmpty(regionalType), u => u.RegionalType.Contains(regionalType))
+            .WhereIF(!string.IsNullOrEmpty(regionalCode), u => u.RegionalCode.Contains(regionalCode))
             .WhereIF(!string.IsNullOrWhiteSpace(input.RegionalType), u => u.RegionalType.Contains(input.RegionalType.Trim()))
             .WhereIF(!string.IsNullOrWhiteSpace(input.RegionalCode), u => u.RegionalCode.Contains(input.RegionalCode.Trim()))
             .WhereIF(!string.IsNullOrWhiteSpace(input.Country), u => u.Country.Contains(input.Country.Trim()))
             .WhereIF(input.AuthorizedPersonnel != null, u => u.AuthorizedPersonnel == input.AuthorizedPersonnel);
         return await query.OrderBuilder(input).ToPagedListAsync(input.Page, input.PageSize);
-
-        //var entity = await _regionalInformation.AsQueryable()
-        //   .WhereIF(!Name.IsNullOrEmpty(), u => u.Country == Name|| u.RegionalType == RegionalType || u.RegionalCode == RegionalCode)
-        //   .ClearFilter()
-        //   .ToListAsync();
-        //return entity;
     }
+    
+    #endregion
 
+    #region 修改区域信息
     /// <summary>
     /// 修改区域信息
     /// </summary>
@@ -115,16 +130,26 @@ public class RegionalInformationService : IDynamicApiController, ITransient
     [ApiDescriptionSettings(Name = "Update"), HttpPost]
     public async Task Update(UpdateRegionalInformationInput input)
     {
-        //修改部分字段
-        // var entity = await _regionalInformation.AsQueryable().FirstAsync(u => u.Id == input.Id);
-        // entity.BaseStationCode = input.BaseStationCode;
-
-        //修改全部字段
-        var entity = input.Adapt<Entity.RegionalInformation>();
-        await _regionalInformation.AsUpdateable(entity)
-            .ExecuteCommandAsync();
+        try
+        {
+            //修改部分字段
+            // var entity = await _regionalInformation.AsQueryable().FirstAsync(u => u.Id == input.Id);
+            // entity.BaseStationCode = input.BaseStationCode;
+            //修改全部字段
+            var entity = input.Adapt<Entity.RegionalInformation>();
+            await _regionalInformation.AsUpdateable(entity)
+                .ExecuteCommandAsync();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 
+    #endregion
+    
+    #region 删除区域信息
     /// <summary>
     /// 删除区域信息
     /// </summary>
@@ -133,11 +158,22 @@ public class RegionalInformationService : IDynamicApiController, ITransient
     [ApiDescriptionSettings(Name = "Delete"), HttpPost]
     public async Task Delete(DelectRegionalInformationInput input)
     {
-        var entity = await _regionalInformation.GetFirstAsync(u => u.Id == input.Id) ?? throw Oops.Oh(ErrorCodeEnum.D1002);
-        await _regionalInformation.FakeDeleteAsync(entity);   //假删除
-        //await _baseStationInformation.DeleteAsync(u => u.Id == id);  //真删除
+        try
+        {
+            var entity = await _regionalInformation.GetFirstAsync(u => u.Id == input.Id) ?? throw Oops.Oh(ErrorCodeEnum.D1002);
+            await _regionalInformation.FakeDeleteAsync(entity);   //假删除
+            //await _baseStationInformation.DeleteAsync(u => u.Id == id);  //真删除
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
+    
+    #endregion
 
+    #region 批量删除区域信息
     /// <summary>
     /// 批量删除区域信息
     /// </summary>
@@ -148,12 +184,22 @@ public class RegionalInformationService : IDynamicApiController, ITransient
     [ApiDescriptionSettings(Name = "BatchDelete"), HttpPost]
     public async Task<int> BatchDelete([Required(ErrorMessage = "主键列表不能为空")] List<DelectRegionalInformationInput> input)
     {
-        var exp = Expressionable.Create<Entity.RegionalInformation>();
-        foreach (var row in input) exp = exp.Or(it => it.Id == row.Id);
-        var list = await _regionalInformation.AsQueryable().Where(exp.ToExpression()).ToListAsync();
-        return await _regionalInformation.FakeDeleteAsync(list);   //假删除
-        //return await _leadershipplanuserRep.DeleteAsync(list);   //真删除
+        try
+        {
+            var exp = Expressionable.Create<Entity.RegionalInformation>();
+            foreach (var row in input) exp = exp.Or(it => it.Id == row.Id);
+            var list = await _regionalInformation.AsQueryable().Where(exp.ToExpression()).ToListAsync();
+            return await _regionalInformation.FakeDeleteAsync(list);   //假删除
+            //return await _leadershipplanuserRep.DeleteAsync(list);   //真删除
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
+    
+    #endregion
 
 
 

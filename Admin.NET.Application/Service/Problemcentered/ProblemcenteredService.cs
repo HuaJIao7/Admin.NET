@@ -46,7 +46,7 @@ public class ProblemcenteredService : IDynamicApiController, ITransient
     private readonly SqlSugarRepository<SysFile> _sysFileRep;
     private readonly string _imageType = ".jpeg.jpg.png.bmp.gif.tif";
 
-
+    #region 实例化
     public ProblemcenteredService(
         SqlSugarRepository<Entity.Problemcentered> problemcenteredRepository,
         ISqlSugarClient sqlSugarClient, 
@@ -72,7 +72,9 @@ public class ProblemcenteredService : IDynamicApiController, ITransient
         _sysFileRep = sysFileRep;
         _likeListRepository = likeListRepository;
     }
+    #endregion
 
+    #region 查询问题中心列表
     /// <summary>
     /// 查询问题中心列表
     /// </summary>
@@ -87,6 +89,9 @@ public class ProblemcenteredService : IDynamicApiController, ITransient
         return entity;
     }
 
+    #endregion
+    
+    #region 查询问题中心列表主键
     /// <summary>
     /// 查询问题中心列表主键
     /// </summary>
@@ -101,18 +106,21 @@ public class ProblemcenteredService : IDynamicApiController, ITransient
             .ClearFilter().ToListAsync();
         return entity;
     }
-
-    [DisplayName("查看是否点赞")]
-    [ApiDescriptionSettings(Name = "GetAllProblemcentered"), HttpGet]
-    public async Task<List<Entity.Problemcentered>> GetAllProblemcentered(long id)
-    {
-        var entity = await _problemcenteredRepository.AsQueryable().ToListAsync();
-        return entity;
-    }
+    #endregion
+    
+    #region 查看是否点赞
+    /// <summary>
+    /// 查看是否点赞
+    /// </summary>
+    /// <param name="input"></param>
+    /// <param name="userId"></param>
+    /// <returns></returns>
     [DisplayName("查看是否点赞")]
     [ApiDescriptionSettings(Name = "GetAllProblemcentered"), HttpPost]
     public async Task<SqlSugarPagedList<ProblemcenteredInput>> GetAllProblemcentered(ProblemcenteredDto input, long userId)
     {
+        try
+        {
             // 获取所有的 Problemcentered 数据
             var query = _problemcenteredRepository.AsQueryable().Select<Entity.Problemcentered>();
 
@@ -128,84 +136,47 @@ public class ProblemcenteredService : IDynamicApiController, ITransient
                 .Select(it => new ProblemcenteredInput
                 {
                     Id = it.Id,
+                    PlanId = it.PlanId,
+                    PlaceName = it.PlaceName,
+                    PlaceId = it.PlaceId,
+                    PlanName = it.PlanName,
+                    UserId = it.UserId,
+                    UserName = it.UserName,
+                    ReportContent = it.ReportContent,
+                    Source = it.Source,
+                    UserDeptId = it.UserDeptId,
+                    UserDeptName = it.UserDeptName,
+                    ReportImg = it.ReportImg,
+                    ReportVideo = it.ReportVideo,
+                    ReportMp3 = it.ReportMp3,
+                    ReportTime = it.ReportTime,
+                    Status = it.Status,
+                    HandleUserId = it.HandleUserId,
+                    HandleUserName = it.HandleUserName,
+                    HandleDeptId = it.HandleDeptId,
+                    HandleDeptName = it.HandleDeptName,
+                    HandleContent = it.HandleContent,
+                    HandleImg = it.HandleImg,
+                    HandleVideo = it.HandleVideo,
+                    HandleMp3 = it.HandleMp3,
+                    HandleTime = it.HandleTime,
+                    GiveUpCount = it.GiveUpCount,
                     Like =  likedProblemIds.Contains(it.Id) // 检查当前 id 是否在点赞列表中
                 })
                 .ToPagedListAsync(input.Page, input.PageSize);
             return problemcenteredInputs;
+
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 
-    //[DisplayName("查看是否点赞as")]
-    //[ApiDescriptionSettings(Name = "GetAllProblemcenteredas"), HttpPost]
-    //public async Task<SqlSugarPagedList<ProblemcenteredInput>> GetAllProblemcenteredas(ProblemcenteredDto input, long id)
-    //{
-    //    var query = _problemcenteredRepository.AsQueryable()
-    //        .Select<Entity.Problemcentered>();
+    #endregion
 
-    //    return await query.OrderBuilder(input).Select(it => new ProblemcenteredInput
-    //    {
-    //        Id = it.Id,
-    //        Like = true
-
-    //    }).ToPagedListAsync(input.Page, input.PageSize);
-    //}
-
-
-    //public async Task<SqlSugarPagedList<ProblemcenteredInput>> GetAllProblemcenteredasx(ProblemcenteredDto input, long id)
-    //{
-    //    var query = _problemcenteredRepository.AsQueryable()
-    //        .Select<Entity.Problemcentered>();
-
-    //    // 假设 LikeList 表的实体类为 Entity.LikeList
-    //    var likesQuery = _likeListRepository.AsQueryable()
-    //        .Where(l => l.UserId == id) // 根据传入的用户id过滤
-    //        .Select(l => l.ProblemId); // 假设 LikeList 表里面有 ProblemcenteredId 字段
-
-    //    var problemCentereds = await query.OrderBuilder(input).ToListAsync();
-
-    //    var problemCenteredInputs = problemCentereds.Select(it => new ProblemcenteredInput
-    //    {
-    //        Id = it.Id,
-    //        Like = likesQuery.Contains(it.Id) // 如果 LikeList 中包含该 Id，Like 为 true，否则为 false
-    //    }).ToList();
-
-    //    return new SqlSugarPagedList<ProblemcenteredInput>(problemCenteredInputs, input.Page, input.PageSize);
-    //}
-
-    //public async Task<SqlSugarPagedList<ProblemcenteredInput>> GetAllProblaemcenteredas(ProblemcenteredDto input, long userId)
-    //{
-    //    try
-    //    {
-    //        // 获取所有的 Problemcentered 数据
-    //        var query = _problemcenteredRepository.AsQueryable().Select<Entity.Problemcentered>();
-
-    //        // 获取当前用户的所有点赞的 ProblemcenteredId
-    //        var likedProblemIds = await _likeListRepository.AsQueryable()
-    //            .Where(l => l.UserId == userId)
-    //            .Select(l => l.ProblemId)
-    //            .ToListAsync();
-
-    //        // 获取查询的结果，并映射到 ProblemcenteredInput
-    //        var problemcenteredInputs = await query
-    //            .OrderBuilder(input)
-    //            .Select(it => new ProblemcenteredInput
-    //            {
-    //                Id = it.Id,
-    //                Like = likedProblemIds.Contains(it.Id) // 检查当前 id 是否在点赞列表中
-    //            })
-    //            .ToPagedListAsync(input.Page, input.PageSize);
-
-    //        return problemcenteredInputs;
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        // 记录错误或根据需要处理异常
-    //        throw new Exception("Failed to get problem centered data", ex);
-    //    }
-    //}
-
-
-
-
+    #region 模糊查询问题中心列表
     /// <summary>
     /// 模糊查询问题中心列表
     /// </summary>
@@ -213,9 +184,11 @@ public class ProblemcenteredService : IDynamicApiController, ITransient
     // [AllowAnonymous]
     [DisplayName("模糊查询问题中心列表")]
     [ApiDescriptionSettings(Name = "GetConditionProblemcentered"), HttpPost]
-    public async Task<SqlSugarPagedList<Entity.Problemcentered>> GetConditionProblemcentered(ProblemcenteredDto input, string? name,string? HandleUserName,string? Status)
+    public async Task<SqlSugarPagedList<Entity.Problemcentered>> GetConditionProblemcentered(ProblemcenteredDto input, string? name,string? handleUserName,string? status)
     {
-        var query = _problemcenteredRepository.AsQueryable()
+        try
+        { 
+            var query = _problemcenteredRepository.AsQueryable()
             .WhereIF(!string.IsNullOrWhiteSpace(input.PlanName), u => u.PlanName.Contains(input.PlanName.Trim()))
             .WhereIF(!string.IsNullOrWhiteSpace(input.PlaceName), u => u.PlaceName.Contains(input.PlaceName.Trim()))
             .WhereIF(!string.IsNullOrWhiteSpace(input.UserName), u => u.UserName.Contains(input.UserName.Trim()))
@@ -245,8 +218,8 @@ public class ProblemcenteredService : IDynamicApiController, ITransient
                 u.PlanName.Contains(name) ||
                 u.PlaceName.Contains(name) ||
                 u.UserName.Contains(name))
-            .WhereIF(!string.IsNullOrEmpty(HandleUserName), u => u.HandleUserName.Contains(HandleUserName))
-            .WhereIF(!string.IsNullOrEmpty(Status), u => u.Status.Contains(Status)) // 假设 Status 是字段名
+            .WhereIF(!string.IsNullOrEmpty(handleUserName), u => u.HandleUserName.Contains(handleUserName))
+            .WhereIF(!string.IsNullOrEmpty(status), u => u.Status.Contains(status)) // 假设 Status 是字段名
                                                                                     //.Where(u => u.ReportTime >= dateTime.ReportTimeMinimum && u.ReportTime <= dateTime.ReportTimeMax) // 筛选报送时间
             .Where(u =>
                 (input.ReportTimeMinimum == null && input.ReportTimeMax == null) ||
@@ -262,14 +235,21 @@ public class ProblemcenteredService : IDynamicApiController, ITransient
                 );
 
         return await query.OrderBuilder(input).ToPagedListAsync(input.Page, input.PageSize);
-
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
 
 
         //var entity = await _problemcenteredRepository.AsQueryable()
         //    .ToListAsync();
         //return entity.Adapt<List<Entity.Problemcentered>>();
     }
-
+    #endregion
+    
+    #region 增加问题中心
     /// <summary>
     /// 增加问题中心 ➕
     /// </summary>
@@ -279,43 +259,54 @@ public class ProblemcenteredService : IDynamicApiController, ITransient
     [ApiDescriptionSettings(Name = "Add"), HttpPost]
     public async Task Add(ProblemcenteredInput input)
     {
-        var entity = input.Adapt<Entity.Problemcentered>();
-        //var repUser = await _userRep.AsQueryable().ClearFilter().Where(x => x.Id == entity.UserId).FirstAsync();
-        //var repUserDept = await _orgRep.AsQueryable().ClearFilter().Where(x => x.Id == repUser.OrgId).FirstAsync();
-        //entity.UserName = repUser == null ? "" : repUser.RealName;
-        //entity.UserDeptName = repUserDept == null ? "" : repUserDept.Name;
-        //entity.ReportTime = DateTime.Now;
-        //entity.Status = "待派单";
-        //entity.GiveUpCount = 0;
-        //return await _problemcenteredRepository.InsertAsync(entity) ? entity.Id : 0;
-        entity.PlanId = input.PlanId;
-        entity.PlanName = input.PlanName;
-        entity.PlaceId = input.PlaceId;
-        entity.PlaceName = input.PlaceName;
-        entity.UserId = input.UserId;
-        entity.UserName = input.UserName;
-        entity.ReportContent = input.ReportContent;
-        entity.Source = input.Source;
-        entity.UserDeptId = input.UserDeptId;
-        entity.UserDeptName = input.UserDeptName;
-        entity.ReportImg = input.ReportImg;
-        entity.ReportVideo = input.ReportVideo;
-        entity.ReportMp3 = input.ReportMp3;
-        entity.ReportTime = DateTime.Now;
-        entity.Status = "待派单";
-        entity.HandleUserId = input.HandleUserId;
-        entity.HandleUserName = input.HandleUserName;
-        entity.HandleDeptId = input.HandleDeptId;
-        entity.HandleDeptName = input.HandleDeptName;
-        entity.HandleContent = input.HandleContent;
-        entity.HandleImg = input.HandleImg;
-        entity.HandleVideo = input.HandleVideo;
-        entity.HandleMp3 = input.HandleMp3;
-        entity.HandleTime = input.HandleTime;
-        entity.GiveUpCount = 0;
-        await _problemcenteredRepository.InsertAsync(entity);
+        try
+        {
+            var entity = input.Adapt<Entity.Problemcentered>();
+            //var repUser = await _userRep.AsQueryable().ClearFilter().Where(x => x.Id == entity.UserId).FirstAsync();
+            //var repUserDept = await _orgRep.AsQueryable().ClearFilter().Where(x => x.Id == repUser.OrgId).FirstAsync();
+            //entity.UserName = repUser == null ? "" : repUser.RealName;
+            //entity.UserDeptName = repUserDept == null ? "" : repUserDept.Name;
+            //entity.ReportTime = DateTime.Now;
+            //entity.Status = "待派单";
+            //entity.GiveUpCount = 0;
+            //return await _problemcenteredRepository.InsertAsync(entity) ? entity.Id : 0;
+            entity.PlanId = input.PlanId;
+            entity.PlanName = input.PlanName;
+            entity.PlaceId = input.PlaceId;
+            entity.PlaceName = input.PlaceName;
+            entity.UserId = input.UserId;
+            entity.UserName = input.UserName;
+            entity.ReportContent = input.ReportContent;
+            entity.Source = input.Source;
+            entity.UserDeptId = input.UserDeptId;
+            entity.UserDeptName = input.UserDeptName;
+            entity.ReportImg = input.ReportImg;
+            entity.ReportVideo = input.ReportVideo;
+            entity.ReportMp3 = input.ReportMp3;
+            entity.ReportTime = DateTime.Now;
+            entity.Status = "待派单";
+            entity.HandleUserId = input.HandleUserId;
+            entity.HandleUserName = input.HandleUserName;
+            entity.HandleDeptId = input.HandleDeptId;
+            entity.HandleDeptName = input.HandleDeptName;
+            entity.HandleContent = input.HandleContent;
+            entity.HandleImg = input.HandleImg;
+            entity.HandleVideo = input.HandleVideo;
+            entity.HandleMp3 = input.HandleMp3;
+            entity.HandleTime = input.HandleTime;
+            entity.GiveUpCount = 0;
+            await _problemcenteredRepository.InsertAsync(entity);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+        
     }
+    #endregion
 
+    #region 修改问题中心内容
     /// <summary>
     /// 修改问题中心内容
     /// </summary>
@@ -325,12 +316,22 @@ public class ProblemcenteredService : IDynamicApiController, ITransient
     [ApiDescriptionSettings(Name = "Update"), HttpPost]
     public async Task UpdateProblemcentered(UpdateProblemcentered input)
     {
+        try
+        {
+            var entity = input.Adapt<Entity.Problemcentered>();
+            await _problemcenteredRepository.AsUpdateable(entity)
+                .Where(u => u.Id == entity.Id)
+                .ExecuteCommandAsync() ;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
         //修改全部字段
-        var entity = input.Adapt<Entity.Problemcentered>();
-        await _problemcenteredRepository.AsUpdateable(entity)
-            .Where(u => u.Id == entity.Id)
-            .ExecuteCommandAsync();
+        
     }
+    #endregion
 
     #region 上传文件
     /// <summary>
