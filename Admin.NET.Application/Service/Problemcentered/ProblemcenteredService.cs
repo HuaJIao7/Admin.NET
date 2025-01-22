@@ -20,11 +20,13 @@ using Microsoft.Extensions.Options;
 using OnceMi.AspNetCore.OSS;
 using Yitter.IdGenerator;
 using Admin.NET.Application.Service.Problemcentered.Dto;
+using Elastic.Clients.Elasticsearch;
+
 namespace Admin.NET.Application.Service.Problemcentered;
 /// <summary>
 /// 问题中心服务
 /// </summary>
-[AllowAnonymous]
+// [AllowAnonymous]
 [ApiDescriptionSettings(ApplicationConst.GroupName, Order = 100)]
 public class ProblemcenteredService : IDynamicApiController, ITransient
 {
@@ -89,7 +91,7 @@ public class ProblemcenteredService : IDynamicApiController, ITransient
         return entity;
     }
 
-    #endregion
+    #endregion      
     
     #region 查询问题中心列表主键
     /// <summary>
@@ -107,6 +109,25 @@ public class ProblemcenteredService : IDynamicApiController, ITransient
         return entity;
     }
     #endregion
+
+    // public async Task<SqlSugarPagedList<ProblemcenteredInput>> asd (ProblemcenteredDto input, long userId)
+    // {
+    //     var query = _problemcenteredRepository.AsQueryable().Select<Entity.Problemcentered>();
+    //
+    //     var like = await _likeListRepository.AsQueryable()
+    //         .Where(l => l.Id == userId)
+    //         .Select(l => l.ProblemId).ToListAsync();
+    //     var problemcenteredInputs = await query
+    //         .WhereIF(!string.IsNullOrWhiteSpace(input.PlanName), u => u.PlanName.Contains(input.PlanName.Trim()))
+    //         .WhereIF(!string.IsNullOrWhiteSpace(input.PlaceName), u => u.PlaceName.Contains(input.PlaceName.Trim()))
+    //         .WhereIF(!string.IsNullOrWhiteSpace(input.ProblemName),
+    //             u => u.ProblemName.Contains(input.ProblemName.Trim()))
+    //         .WhereIF(!string.IsNullOrWhiteSpace(input.ProblemType),
+    //             u => u.ProblemType.Contains(input.ProblemType.Trim()))
+    //         .WhereIF(!string.IsNullOrWhiteSpace(input.ProblemLevel),
+    //             u => u.ProblemLevel.Contains(input.ProblemLevel.Trim()));
+    //     return problemcenteredInputs;
+    // }   
     
     #region 查看是否点赞
     /// <summary>
@@ -127,7 +148,7 @@ public class ProblemcenteredService : IDynamicApiController, ITransient
             // 获取当前用户的所有点赞的 ProblemcenteredId
             var likedProblemIds = await _likeListRepository.AsQueryable()
                 .Where(l => l.UserId == userId)//查询当前用户点赞的记录
-                .Select(l => l.ProblemId)//获取全部
+                .Select(l => l.ProblemId)//获取全部点赞
                 .ToListAsync(); //获取点赞的 ProblemcenteredId 列表
 
             // 获取查询的结果，并映射到 ProblemcenteredInput
@@ -135,6 +156,7 @@ public class ProblemcenteredService : IDynamicApiController, ITransient
                 .OrderBuilder(input)
                 .Select(it => new ProblemcenteredInput
                 {
+                    #region 字段
                     Id = it.Id,
                     PlanId = it.PlanId,
                     PlaceName = it.PlaceName,
@@ -162,6 +184,7 @@ public class ProblemcenteredService : IDynamicApiController, ITransient
                     HandleTime = it.HandleTime,
                     GiveUpCount = it.GiveUpCount,
                     Like =  likedProblemIds.Contains(it.Id) // 检查当前 id 是否在点赞列表中
+                    #endregion
                 })
                 .ToPagedListAsync(input.Page, input.PageSize);
             return problemcenteredInputs;
@@ -339,7 +362,7 @@ public class ProblemcenteredService : IDynamicApiController, ITransient
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [DisplayName("上传文件")]
     public async Task<SysFile> UploadFile([FromForm] UploadFileInput input)
     {

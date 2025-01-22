@@ -11,7 +11,7 @@ namespace Admin.NET.Core.Service;
 /// <summary>
 /// 系统字典值服务 🧩
 /// </summary>
-    [AllowAnonymous]
+// [AllowAnonymous]
 [ApiDescriptionSettings(Order = 420)]
 public class SysDictDataService : IDynamicApiController, ITransient
 {
@@ -35,7 +35,7 @@ public class SysDictDataService : IDynamicApiController, ITransient
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [DisplayName("获取字典值分页列表")]
     public async Task<SqlSugarPagedList<SysDictData>> Page(PageDictDataInput input, StatusEnum? state, string? value)
     {
@@ -51,7 +51,7 @@ public class SysDictDataService : IDynamicApiController, ITransient
             .ToPagedListAsync(input.Page, input.PageSize);
     }
 
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [DisplayName("获取字典值分页列表")]
     public async Task<SqlSugarPagedList<SysDictData>> Page(PageDictDataInput input)
     {
@@ -69,7 +69,7 @@ public class SysDictDataService : IDynamicApiController, ITransient
     /// 获取字典值列表 🔖
     /// </summary>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [DisplayName("获取字典值列表")]
     public async Task<List<SysDictData>> GetList([FromQuery] GetDataDictDataInput input)
     {
@@ -100,7 +100,7 @@ public class SysDictDataService : IDynamicApiController, ITransient
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [UnitOfWork]
     [ApiDescriptionSettings(Name = "Update"), HttpPost]
     [DisplayName("更新字典值")]
@@ -124,7 +124,7 @@ public class SysDictDataService : IDynamicApiController, ITransient
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [UnitOfWork]
     [ApiDescriptionSettings(Name = "Delete"), HttpPost]
     [DisplayName("删除字典值")]
@@ -143,7 +143,7 @@ public class SysDictDataService : IDynamicApiController, ITransient
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [DisplayName("获取字典值详情")]
     public async Task<SysDictData> GetDetail([FromQuery] DictDataInput input)
     {
@@ -155,7 +155,7 @@ public class SysDictDataService : IDynamicApiController, ITransient
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [UnitOfWork]
     [DisplayName("修改字典值状态")]
     public async Task SetStatus(DictDataInput input)
@@ -174,7 +174,7 @@ public class SysDictDataService : IDynamicApiController, ITransient
     /// </summary>
     /// <param name="dictTypeId"></param>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [NonAction]
     public async Task<List<SysDictData>> GetDictDataListByDictTypeId(long dictTypeId)
     {
@@ -194,7 +194,7 @@ public class SysDictDataService : IDynamicApiController, ITransient
     /// </summary>
     /// <param name="code"></param>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [DisplayName("根据字典类型编码获取字典值集合")]
     public async Task<List<SysDictData>> GetDataList(string code)
     {
@@ -218,7 +218,7 @@ public class SysDictDataService : IDynamicApiController, ITransient
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [DisplayName("根据查询条件获取字典值集合")]
     public async Task<List<SysDictData>> GetDataList([FromQuery] QueryDictDataInput input)
     {
@@ -236,7 +236,7 @@ public class SysDictDataService : IDynamicApiController, ITransient
     /// 获取租户Id列表
     /// </summary>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [NonAction]
     public List<long> GetTenantIdList() => SysDictTypeService.GetTenantIdList();
 
@@ -244,7 +244,7 @@ public class SysDictDataService : IDynamicApiController, ITransient
     /// 获取SysDictData表查询实例
     /// </summary>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [NonAction]
     public ISugarQueryable<SysDictData> GetSysDictDataQueryable()
     {
@@ -257,7 +257,7 @@ public class SysDictDataService : IDynamicApiController, ITransient
     /// </summary>
     /// <param name="dictTypeId"></param>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [NonAction]
     public async Task DeleteDictData(long dictTypeId)
     {

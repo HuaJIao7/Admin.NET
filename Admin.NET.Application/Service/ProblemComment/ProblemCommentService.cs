@@ -15,7 +15,7 @@ namespace Admin.NET.Application.Service.ProblemComment;
 /// <summary>
 /// 问题评论服务 🧩
 /// </summary>
-[AllowAnonymous]
+// [AllowAnonymous]
 [ApiDescriptionSettings(ApplicationConst.GroupName, Order = 100)]
 public class ProblemCommentService : IDynamicApiController, ITransient
 {

@@ -15,7 +15,7 @@ namespace Admin.NET.Application.Service.LikeList;
 /// <summary>
 /// 点赞表服务 🧩
 /// </summary>
-[AllowAnonymous]
+// [AllowAnonymous]
 [ApiDescriptionSettings(ApplicationConst.GroupName, Order = 100)]
 public class LikeListSerivce : IDynamicApiController, ITransient
 {
@@ -65,7 +65,7 @@ public class LikeListSerivce : IDynamicApiController, ITransient
     /// <param name="input"></param>
     /// <returns></returns>
     /// <exception cref="AppFriendlyException"></exception>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [DisplayName("添加点赞")]
     [ApiDescriptionSettings(Name = "Add"), HttpPost]
     public async Task GiveUp(LikeListInput input)
@@ -107,7 +107,7 @@ public class LikeListSerivce : IDynamicApiController, ITransient
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [DisplayName("取消点赞")]
     [ApiDescriptionSettings(Name = "CancelLikes"), HttpPost]
     public async Task CancelLikes(LikeListInput input)
@@ -132,7 +132,7 @@ public class LikeListSerivce : IDynamicApiController, ITransient
     /// 获取点赞列表
     /// </summary>
     /// <returns></returns>
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [DisplayName("获取点赞列表")]
     [ApiDescriptionSettings(Name = "GetList"), HttpGet]
     public async Task<List<Entity.LikeList>> GetLikeList()

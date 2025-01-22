@@ -70,7 +70,7 @@ public class SysMenuService : IDynamicApiController, ITransient
         return entity;
     }
 
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [DisplayName("查询全部菜单列表")]
     public async Task<List<SysMenu>> GetAllList()
     {

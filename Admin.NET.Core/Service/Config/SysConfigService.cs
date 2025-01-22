@@ -243,7 +243,7 @@ public class SysConfigService : IDynamicApiController, ITransient
     /// </summary>
     /// <returns></returns>
     [SuppressMonitor]
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [DisplayName("获取系统信息")]
     public async Task<dynamic> GetSysInfo()
     {

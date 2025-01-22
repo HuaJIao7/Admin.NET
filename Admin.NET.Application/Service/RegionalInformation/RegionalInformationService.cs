@@ -70,7 +70,7 @@ public class RegionalInformationService : IDynamicApiController, ITransient
     
     #endregion
 
-    #region 修改区域信息
+    #region 查询全部区域信息
     /// <summary>
     /// 查询全部区域信息
     /// </summary>
@@ -93,7 +93,7 @@ public class RegionalInformationService : IDynamicApiController, ITransient
     
     #endregion
     
-    #region 修改区域信息
+    #region 模糊查询区域信息
     /// <summary>
     /// 模糊查询区域信息
     /// </summary>
