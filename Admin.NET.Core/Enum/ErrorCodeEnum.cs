@@ -13,6 +13,11 @@ namespace Admin.NET.Core;
 [Description("系统错误码")]
 public enum ErrorCodeEnum
 {
+    /// <summary>
+    /// 已有当天值班计划
+    /// </summary>
+    [ErrorCodeItemMetadata("已有当天值班计划")]
+    P1000,
     [ErrorCodeItemMetadata("不存在")]
     YZ0004,
     /// <summary>
