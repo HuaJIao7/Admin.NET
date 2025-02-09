@@ -19,17 +19,17 @@ public class Leadingtasksfile : EntityBaseData
     /// </summary>
     [SugarColumn(ColumnName = "TaskId", ColumnDescription = "任务id")]
     public virtual long? TaskId { get; set; }
-    
+
     /// <summary>
     /// 文件类型
     /// </summary>
     [SugarColumn(ColumnName = "Type", ColumnDescription = "文件类型", Length = 32)]
     public virtual string? Type { get; set; }
-    
+
     /// <summary>
     /// 文件路径
     /// </summary>
     [SugarColumn(ColumnName = "Url", ColumnDescription = "文件路径", Length = 500)]
     public virtual string? Url { get; set; }
-    
+
 }

@@ -6,7 +6,12 @@
 
 using Admin.NET.Application.Entity;
 using Admin.NET.Core.Service;
+using Aliyun.OSS.Util;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
+using OnceMi.AspNetCore.OSS;
+using Yitter.IdGenerator;
+using static SKIT.FlurlHttpClient.Wechat.Api.Models.CgibinExpressIntracityUpdateStoreRequest.Types;
 
 namespace Admin.NET.Application;
 
@@ -18,12 +23,49 @@ public class LeadingchangeshiftsService : IDynamicApiController, ITransient
 {
     private readonly SqlSugarRepository<Leadingchangeshifts> _leadingchangeshiftsRep;
     private readonly ISqlSugarClient _sqlSugarClient;
+    private readonly UploadOptions _uploadOptions;
+    private readonly SqlSugarRepository<SysFile> _sysFileRep;
+    private readonly OSSProviderOptions _OSSProviderOptions;
+    private readonly IOSSService _OSSService;
 
-    public LeadingchangeshiftsService(SqlSugarRepository<Leadingchangeshifts> leadingchangeshiftsRep, ISqlSugarClient sqlSugarClient)
+    public LeadingchangeshiftsService(SqlSugarRepository<Leadingchangeshifts> leadingchangeshiftsRep,
+        ISqlSugarClient sqlSugarClient, IOptions<UploadOptions> uploadOptions, SqlSugarRepository<SysFile> sysFileRep, IOptions<OSSProviderOptions> oSSProviderOptions,
+        IOSSServiceFactory ossServiceFactory)
     {
         _leadingchangeshiftsRep = leadingchangeshiftsRep;
         _sqlSugarClient = sqlSugarClient;
     }
+
+    /// <summary>
+    /// 带班交接班记录 🔖
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    [DisplayName("带班交接班记录详情")]
+    [ApiDescriptionSettings(Name = "ChangeShiftsDetail"), HttpPost]
+    public async Task<LeadingchangeshiftsChangeShiftsOutput> ChangeShiftsDetail(long pid)
+    {
+        var query = _leadingchangeshiftsRep.AsQueryable()
+            .LeftJoin<Leadershipplan>((o, cus) => o.PlanId == cus.Id)
+           .WhereIF(pid != null, o => o.Id == pid)
+            .Select((o, cus) => new LeadingchangeshiftsChangeShiftsOutput
+            {
+                Id = o.Id,
+                ShiftName = cus.ShiftName,
+                Classes = o.Classes,
+                TakeUserId = o.TakeUserId,
+                TakeUserName = o.TakeUserName,
+                UserId = o.UserId,
+                UserName = o.UserName,
+                Time = o.Time,
+                Status = o.Status,
+                imgFile =o.ImgUrl,//图片
+                videoFile = o.VideoUrl,//视频
+                Content=o.Content
+            }).OrderBy("o.Id");
+        return await query.FirstAsync();
+    }
+
 
     /// <summary>
     /// 分页查询带班计划交接班 🔖
@@ -166,10 +208,9 @@ public class LeadingchangeshiftsService : IDynamicApiController, ITransient
                 {
                     
                     // 校验并过滤必填基本类型为null的字段
-                    var rows = pageItems.Where(x => {
-                        return true;
-                    }).Adapt<List<Leadingchangeshifts>>();
-                    
+                    var rows = pageItems.Adapt<List<Leadingchangeshifts>>();
+
+                    Thread.Sleep(1000);
                     var storageable = _leadingchangeshiftsRep.Context.Storageable(rows)
                         .SplitError(it => it.Item.Status?.Length > 10, "状态长度不能超过10个字符")
                         .SplitError(it => it.Item.UserName?.Length > 32, "交班人姓名长度不能超过32个字符")

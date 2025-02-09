@@ -42,15 +42,184 @@ public class LeadershipplanBaseInput
     
 }
 
+
+/// <summary>
+/// 带班计划增加输入参数（三班及人员）
+/// </summary>
+public class AddLeadershipplanOneDayInput
+{
+
+    /// <summary>
+    /// 计划名称
+    /// </summary>
+    public string? ShiftName { get; set; }
+
+    /// <summary>
+    /// 带班时间
+    /// </summary>
+    public DateTime? ShiftTime { get; set; }
+
+    /// <summary>
+    /// 带班领导早班
+    /// </summary>
+    public string? ClassLeaderMorning { get; set; }
+    /// <summary>
+    /// 值班领导早班
+    /// </summary>
+    public string? DutyLeaderMorning { get; set; }
+    /// <summary>
+    /// 值班人员早班
+    /// </summary>
+    public string? DutyMorning { get; set; }
+    /// <summary>
+    /// 班次早班
+    /// </summary>
+    public string? ShiftMorning { get; set; }
+    /// <summary>
+    /// 带班人员早班
+    /// </summary>
+    public string? ClassrMorning { get; set; }
+
+
+
+    /// <summary>
+    /// 带班领导中班
+    /// </summary>
+    public string? ClassLeaderNoon { get; set; }
+    /// <summary>
+    /// 值班领导中班
+    /// </summary>
+    public string? DutyLeaderNoon { get; set; }
+    /// <summary>
+    /// 值班人员中班
+    /// </summary>
+    public string? DutyNoon { get; set; }
+    /// <summary>
+    /// 班次中班
+    /// </summary>
+    public string? ShiftNoon { get; set; }
+    /// <summary>
+    /// 带班人员中班
+    /// </summary>
+    public string? ClassrNoon { get; set; }
+
+
+    /// <summary>
+    /// 带班领导晚班
+    /// </summary>
+    public string? ClassLeadertEvening { get; set; }
+    /// <summary>
+    /// 值班领导晚班
+    /// </summary>
+    public string? DutyLeaderEvening { get; set; }
+    /// <summary>
+    /// 值班人员晚班
+    /// </summary>
+    public string? DutyEvening { get; set; }
+    /// <summary>
+    /// 班次晚班
+    /// </summary>
+    public string? ShiftEvening { get; set; }
+    /// <summary>
+    /// 带班人员晚班
+    /// </summary>
+    public string? ClassrEvening { get; set; }
+
+
+}
+
+
+/// <summary>
+/// 带班计划全天分页查询输入参数
+/// </summary>
+public class PageLeadershipplanOneDayInput : BasePageInput
+{
+
+    /// <summary>
+    /// 计划名称
+    /// </summary>
+    public string? ShiftName { get; set; }
+    /// <summary>
+    /// 人员姓名
+    /// </summary>
+    public string? UserName { get; set; }
+
+    /// <summary>
+    /// 带班时间范围
+    /// </summary>
+    public DateTime? ShiftTimeRange { get; set; }
+
+
+    /// <summary>
+    /// 班次
+    /// </summary>
+    public virtual string? Shift { get; set; }
+    /// <summary>
+    /// 状态
+    /// </summary>
+    public string? Status { get; set; }
+
+    /// <summary>
+    /// 选中主键列表
+    /// </summary>
+    public List<long> SelectKeyList { get; set; }
+}
+
+
+/// <summary>
+/// 带班计划查询带出调休人员及修改替班参数
+/// </summary>
+public class PageLeadershipplannOneDayShiftInput : BasePageInput
+{
+    /// <summary>
+    /// 带班时间
+    /// </summary>
+    public DateTime? ShiftTime { get; set; }
+
+    /// <summary>
+    /// 班次
+    /// </summary>
+    public string? Shift { get; set; }
+
+
+
+}
+
+/// <summary>
+/// 更新人员替班
+/// </summary>
+public class UpdateLeadershipplanUserDayInput
+{
+    /// <summary>
+    /// 主键Id
+    /// </summary>    
+    [Required(ErrorMessage = "主键Id不能为空")]
+    public long? Id { get; set; }
+
+    /// <summary>
+    /// 调休人员
+    /// </summary>
+    public string? CompensatoryLeaveUser { get; set; }
+
+    /// <summary>
+    /// 替班人员
+    /// </summary>
+    public string? reliefUser { get; set; }
+
+}
+
+
+
+
 /// <summary>
 /// 带班计划分页查询输入参数
 /// </summary>
 public class PageLeadershipplanInput : BasePageInput
 {
     /// <summary>
-    /// 带班时间范围
+    /// 带班时间
     /// </summary>
-     public DateTime?[] ShiftTimeRange { get; set; }
+     public DateTime? ShiftTime { get; set; }
     
     /// <summary>
     /// 班次
@@ -73,6 +242,12 @@ public class PageLeadershipplanInput : BasePageInput
 /// </summary>
 public class AddLeadershipplanInput
 {
+
+    /// <summary>
+    /// 计划名称
+    /// </summary>
+    public string? ShiftName { get; set; }
+
     /// <summary>
     /// 带班时间
     /// </summary>
@@ -115,7 +290,13 @@ public class UpdateLeadershipplanInput
     /// </summary>    
     [Required(ErrorMessage = "主键Id不能为空")]
     public long? Id { get; set; }
-    
+
+
+    /// <summary>
+    /// 计划名称
+    /// </summary>
+    public string? ShiftName { get; set; }
+
     /// <summary>
     /// 带班时间
     /// </summary>    
@@ -148,6 +329,14 @@ public class QueryByIdLeadershipplanInput : DeleteLeadershipplanInput
 [ExcelImporter(SheetIndex = 1, IsOnlyErrorRows = true)]
 public class ImportLeadershipplanInput : BaseImportInput
 {
+
+    /// <summary>
+    /// 计划名称
+    /// </summary>
+    [ImporterHeader(Name = "计划名称")]
+    [ExporterHeader("计划名称", Format = "", Width = 25, IsBold = true)]
+    public string? ShiftName { get; set; }
+
     /// <summary>
     /// 带班时间
     /// </summary>
@@ -169,4 +358,83 @@ public class ImportLeadershipplanInput : BaseImportInput
     [ExporterHeader("状态", Format = "", Width = 25, IsBold = true)]
     public string? Status { get; set; }
     
+}
+
+
+
+
+/// <summary>
+/// 带班任务上报
+/// </summary>
+[Tenant("1300000000001")]
+[SugarTable(null, "带班任务上报")]
+public class LeadingtasksNew : EntityBaseData
+{
+    /// <summary>
+    /// 带班计划id
+    /// </summary>
+    [SugarColumn(ColumnName = "PlanId", ColumnDescription = "带班计划id")]
+    public virtual long? PlanId { get; set; }
+
+    /// <summary>
+    /// 上报人员id
+    /// </summary>
+    [SugarColumn(ColumnName = "UserId", ColumnDescription = "上报人员id")]
+    public virtual long? UserId { get; set; }
+
+    /// <summary>
+    /// 上报人员姓名
+    /// </summary>
+    [SugarColumn(ColumnName = "UserName", ColumnDescription = "上报人员姓名", Length = 32)]
+    public virtual string? UserName { get; set; }
+
+    /// <summary>
+    /// 上报人员部门id
+    /// </summary>
+    [SugarColumn(ColumnName = "DeptId", ColumnDescription = "上报人员部门id")]
+    public virtual long? DeptId { get; set; }
+
+    /// <summary>
+    /// 上报人员部门名称
+    /// </summary>
+    [SugarColumn(ColumnName = "DeptName", ColumnDescription = "上报人员部门名称", Length = 32)]
+    public virtual string? DeptName { get; set; }
+
+    /// <summary>
+    /// 上报地点
+    /// </summary>
+    [SugarColumn(ColumnName = "Location", ColumnDescription = "上报地点", Length = 100)]
+    public virtual string? Location { get; set; }
+
+    /// <summary>
+    /// 上报内容
+    /// </summary>
+    [SugarColumn(ColumnName = "Content", ColumnDescription = "上报内容", Length = 500)]
+    public virtual string? Content { get; set; }
+
+    /// <summary>
+    /// 上报时间
+    /// </summary>
+    [SugarColumn(ColumnName = "Time", ColumnDescription = "上报时间")]
+    public virtual DateTime? Time { get; set; }
+
+    /// <summary>
+    /// 任务描述
+    /// </summary>
+    [SugarColumn(ColumnName = "Description", ColumnDescription = "任务描述", Length = 200)]
+    public virtual string? Description { get; set; }
+
+    /// <summary>
+    /// 状态
+    /// </summary>
+    [Required]
+    [SugarColumn(ColumnName = "Status", ColumnDescription = "状态", Length = 10)]
+    public virtual string Status { get; set; }
+
+    /// <summary>
+    /// 任务类型
+    /// </summary>
+    [Required]
+    [SugarColumn(ColumnName = "Type", ColumnDescription = "任务类型", Length = 10)]
+    public virtual string Type { get; set; }
 }

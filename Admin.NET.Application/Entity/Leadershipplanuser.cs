@@ -19,35 +19,35 @@ public class Leadershipplanuser : EntityBaseData
     /// </summary>
     [SugarColumn(ColumnName = "PlanId", ColumnDescription = "计划id")]
     public virtual long? PlanId { get; set; }
-    
+
     /// <summary>
     /// 人员类型
     /// </summary>
     [SugarColumn(ColumnName = "Type", ColumnDescription = "人员类型", Length = 32)]
     public virtual string? Type { get; set; }
-    
+
     /// <summary>
     /// 人员id
     /// </summary>
     [SugarColumn(ColumnName = "UserId", ColumnDescription = "人员id")]
     public virtual long? UserId { get; set; }
-    
+
     /// <summary>
     /// 人员姓名
     /// </summary>
     [SugarColumn(ColumnName = "UserName", ColumnDescription = "人员姓名", Length = 32)]
     public virtual string? UserName { get; set; }
-    
+
     /// <summary>
     /// 部门id
     /// </summary>
     [SugarColumn(ColumnName = "DeptId", ColumnDescription = "部门id")]
     public virtual long? DeptId { get; set; }
-    
+
     /// <summary>
     /// 部门名称
     /// </summary>
     [SugarColumn(ColumnName = "DeptName", ColumnDescription = "部门名称", Length = 32)]
     public virtual string? DeptName { get; set; }
-    
+
 }

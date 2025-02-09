@@ -19,31 +19,31 @@ public class DutySchedule : EntityBaseData
     /// </summary>
     [SugarColumn(ColumnName = "DutyDate", ColumnDescription = "日期", Length = 32)]
     public virtual DateTime? DutyDate { get; set; }
-    
+
     /// <summary>
     /// 人员Id
     /// </summary>
     [SugarColumn(ColumnName = "UserId", ColumnDescription = "人员Id")]
     public virtual long? UserId { get; set; }
-    
+
     /// <summary>
     /// 人员姓名
     /// </summary>
     [SugarColumn(ColumnName = "UserName", ColumnDescription = "人员姓名", Length = 32)]
     public virtual string? UserName { get; set; }
-    
+
     /// <summary>
     /// 部门id
     /// </summary>
     [SugarColumn(ColumnName = "DeptId", ColumnDescription = "部门id")]
     public virtual long? DeptId { get; set; }
-    
+
     /// <summary>
     /// 部门名称
     /// </summary>
     [SugarColumn(ColumnName = "DeptName", ColumnDescription = "部门名称", Length = 32)]
     public virtual string? DeptName { get; set; }
-    
+
     /// <summary>
     /// 值班类型
     /// </summary>

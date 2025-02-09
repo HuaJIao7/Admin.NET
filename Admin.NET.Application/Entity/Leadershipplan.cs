@@ -18,7 +18,7 @@ public class Leadershipplan : EntityBaseData
     /// <summary>
     /// 计划名称
     /// </summary>
-    [SugarColumn(ColumnName = "ShiftName", ColumnDescription = "计划名称")]
+    [SugarColumn(ColumnName = "ShiftName", ColumnDescription = "计划名称", Length = 32)]
     public virtual string? ShiftName { get; set; }
 
 
@@ -27,17 +27,17 @@ public class Leadershipplan : EntityBaseData
     /// </summary>
     [SugarColumn(ColumnName = "ShiftTime", ColumnDescription = "带班时间")]
     public virtual DateTime? ShiftTime { get; set; }
-    
+
     /// <summary>
     /// 班次
     /// </summary>
     [SugarColumn(ColumnName = "Shift", ColumnDescription = "班次", Length = 32)]
     public virtual string? Shift { get; set; }
-    
+
     /// <summary>
     /// 状态
     /// </summary>
     [SugarColumn(ColumnName = "Status", ColumnDescription = "状态", Length = 32)]
     public virtual string? Status { get; set; }
-    
+
 }

@@ -19,89 +19,89 @@ public class Leadingchangeshifts : EntityBaseData
     /// </summary>
     [SugarColumn(ColumnName = "PlanId", ColumnDescription = "带班计划id")]
     public virtual long? PlanId { get; set; }
-    
+
     /// <summary>
     /// 状态
     /// </summary>
     [SugarColumn(ColumnName = "Status", ColumnDescription = "状态", Length = 10)]
     public virtual string? Status { get; set; }
-    
+
     /// <summary>
     /// 交班人id
     /// </summary>
     [SugarColumn(ColumnName = "UserId", ColumnDescription = "交班人id")]
     public virtual long? UserId { get; set; }
-    
+
     /// <summary>
     /// 交班人姓名
     /// </summary>
     [SugarColumn(ColumnName = "UserName", ColumnDescription = "交班人姓名", Length = 32)]
     public virtual string? UserName { get; set; }
-    
+
     /// <summary>
     /// 交班人部门id
     /// </summary>
     [SugarColumn(ColumnName = "Deptid", ColumnDescription = "交班人部门id")]
     public virtual long? Deptid { get; set; }
-    
+
     /// <summary>
     /// 交班人部门名称
     /// </summary>
     [SugarColumn(ColumnName = "DeptName", ColumnDescription = "交班人部门名称", Length = 32)]
     public virtual string? DeptName { get; set; }
-    
+
     /// <summary>
     /// 接班人id
     /// </summary>
     [SugarColumn(ColumnName = "TakeUserId", ColumnDescription = "接班人id")]
     public virtual long? TakeUserId { get; set; }
-    
+
     /// <summary>
     /// 接班人姓名
     /// </summary>
     [SugarColumn(ColumnName = "TakeUserName", ColumnDescription = "接班人姓名", Length = 32)]
     public virtual string? TakeUserName { get; set; }
-    
+
     /// <summary>
     /// 接班人部门id
     /// </summary>
     [SugarColumn(ColumnName = "TakeDeptid", ColumnDescription = "接班人部门id")]
     public virtual long? TakeDeptid { get; set; }
-    
+
     /// <summary>
     /// 接班人部门名称
     /// </summary>
     [SugarColumn(ColumnName = "TakeDeptName", ColumnDescription = "接班人部门名称", Length = 32)]
     public virtual string? TakeDeptName { get; set; }
-    
+
     /// <summary>
     /// 交接班内容
     /// </summary>
     [SugarColumn(ColumnName = "Content", ColumnDescription = "交接班内容", Length = 500)]
     public virtual string? Content { get; set; }
-    
+
     /// <summary>
     /// 交接班图片
     /// </summary>
     [SugarColumn(ColumnName = "ImgUrl", ColumnDescription = "交接班图片", Length = 500)]
     public virtual string? ImgUrl { get; set; }
-    
+
     /// <summary>
     /// 交接班视频
     /// </summary>
     [SugarColumn(ColumnName = "VideoUrl", ColumnDescription = "交接班视频", Length = 500)]
     public virtual string? VideoUrl { get; set; }
-    
+
     /// <summary>
     /// 班次
     /// </summary>
     [SugarColumn(ColumnName = "Classes", ColumnDescription = "班次", Length = 32)]
     public virtual string? Classes { get; set; }
-    
+
     /// <summary>
     /// 交接班时间
     /// </summary>
     [SugarColumn(ColumnName = "Time", ColumnDescription = "交接班时间")]
     public virtual DateTime? Time { get; set; }
-    
+
 }

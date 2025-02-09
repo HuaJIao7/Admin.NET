@@ -19,61 +19,61 @@ public class UserCard : EntityBaseData
     /// </summary>
     [SugarColumn(ColumnName = "UserId", ColumnDescription = "用户id")]
     public virtual long? UserId { get; set; }
-    
+
     /// <summary>
     /// 用户姓名
     /// </summary>
     [SugarColumn(ColumnName = "UserName", ColumnDescription = "用户姓名", Length = 32)]
     public virtual string? UserName { get; set; }
-    
+
     /// <summary>
     /// 图片正面
     /// </summary>
     [SugarColumn(ColumnName = "ImgFront", ColumnDescription = "图片正面", Length = 200)]
     public virtual string? ImgFront { get; set; }
-    
+
     /// <summary>
     /// 图片背面
     /// </summary>
     [SugarColumn(ColumnName = "ImgBack", ColumnDescription = "图片背面", Length = 200)]
     public virtual string? ImgBack { get; set; }
-    
+
     /// <summary>
     /// 性别
     /// </summary>
     [SugarColumn(ColumnName = "Sex", ColumnDescription = "性别", Length = 32)]
     public virtual string? Sex { get; set; }
-    
+
     /// <summary>
     /// 证件号
     /// </summary>
     [SugarColumn(ColumnName = "IDNumber", ColumnDescription = "证件号", Length = 50)]
     public virtual string? IDNumber { get; set; }
-    
+
     /// <summary>
     /// 出生日期
     /// </summary>
     [SugarColumn(ColumnName = "BirthDate", ColumnDescription = "出生日期")]
     public virtual DateTime? BirthDate { get; set; }
-    
+
     /// <summary>
     /// 级别
     /// </summary>
     [SugarColumn(ColumnName = "Level", ColumnDescription = "级别", Length = 32)]
     public virtual string? Level { get; set; }
-    
+
     /// <summary>
     /// 专业
     /// </summary>
     [SugarColumn(ColumnName = "Major", ColumnDescription = "专业", Length = 32)]
     public virtual string? Major { get; set; }
-    
+
     /// <summary>
     /// 批准日期
     /// </summary>
     [SugarColumn(ColumnName = "ApprovalDate", ColumnDescription = "批准日期")]
     public virtual DateTime? ApprovalDate { get; set; }
-    
+
     /// <summary>
     /// 管理号
     /// </summary>

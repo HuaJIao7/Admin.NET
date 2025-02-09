@@ -138,6 +138,86 @@ public class LeadingchangeshiftsOutput
     
 }
 
+
+/// <summary>
+/// 带班计划交接班输出参数
+/// </summary>
+public class LeadingchangeshiftsChangeShiftsOutput
+{
+    /// <summary>
+    /// 主键Id
+    /// </summary>
+    public long Id { get; set; }
+
+    /// <summary>
+    /// 计划名称
+    /// </summary>
+    public string? ShiftName { get; set; }
+
+    /// <summary>
+    /// 班次
+    /// </summary>
+    public string? Classes { get; set; }
+
+
+    /// <summary>
+    /// 接班人id
+    /// </summary>
+    public long? TakeUserId { get; set; }
+
+    /// <summary>
+    /// 接班人姓名
+    /// </summary>
+    public string? TakeUserName { get; set; }
+
+
+    /// 交班人id
+    /// </summary>
+    public long? UserId { get; set; }
+
+    /// <summary>
+    /// 交班人姓名
+    /// </summary>
+    public string? UserName { get; set; }
+
+
+    /// <summary>
+    /// 日期
+    /// </summary>
+    public DateTime? Time { get; set; }
+
+    /// <summary>
+    /// 状态
+    /// </summary>
+    public string? Status { get; set; }
+
+
+    /// <summary>
+    /// 图片
+    /// </summary>
+    public string? imgFile { get; set; }
+
+
+    /// <summary>
+    /// 视频
+    /// </summary>
+    public string? videoFile { get; set; }
+
+
+    /// <summary>
+    /// 交班内容详情
+    /// </summary>
+    public string? Content { get; set; }
+
+
+
+}
+
+
+
+
+
+
 /// <summary>
 /// 带班计划交接班数据导入模板实体
 /// </summary>

@@ -6,6 +6,7 @@
 
 using Admin.NET.Application.Entity;
 using Admin.NET.Core.Service;
+using AngleSharp.Dom;
 using Microsoft.AspNetCore.Http;
 
 namespace Admin.NET.Application;
@@ -68,8 +69,15 @@ public class LeadershipplanuserService : IDynamicApiController, ITransient
     [ApiDescriptionSettings(Name = "Add"), HttpPost]
     public async Task<long> Add(AddLeadershipplanuserInput input)
     {
-        var entity = input.Adapt<Leadershipplanuser>();
-        return await _leadershipplanuserRep.InsertAsync(entity) ? entity.Id : 0;
+        Leadershipplanuser duty = new Leadershipplanuser();
+        duty.PlanId = input.PlanId;
+        duty.Type = input.Type;
+        duty.UserId = input.UserId;
+        duty.UserName = input.UserName;
+        duty.DeptId = input.DeptId;
+        duty.DeptName = input.DeptName;
+        
+        return _leadershipplanuserRep.Insert(duty) ? duty.Id : 0; 
     }
 
     /// <summary>
@@ -157,10 +165,9 @@ public class LeadershipplanuserService : IDynamicApiController, ITransient
                 {
                     
                     // 校验并过滤必填基本类型为null的字段
-                    var rows = pageItems.Where(x => {
-                        return true;
-                    }).Adapt<List<Leadershipplanuser>>();
-                    
+                    var rows = pageItems.Adapt<List<Leadershipplanuser>>();
+
+                    Thread.Sleep(1000);
                     var storageable = _leadershipplanuserRep.Context.Storageable(rows)
                         .SplitError(it => it.Item.Type?.Length > 32, "人员类型长度不能超过32个字符")
                         .SplitError(it => it.Item.UserName?.Length > 32, "人员姓名长度不能超过32个字符")

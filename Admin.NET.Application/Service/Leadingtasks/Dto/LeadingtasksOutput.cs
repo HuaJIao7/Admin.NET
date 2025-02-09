@@ -118,6 +118,158 @@ public class LeadingtasksOutput
     
 }
 
+
+/// <summary>
+/// 带班检查结果输出参数
+/// </summary>
+public class LeadingtasksInspectOutput
+{
+    /// <summary>
+    /// 主键Id
+    /// </summary>
+    public long Id { get; set; }
+
+    /// <summary>
+    /// 计划名称
+    /// </summary>
+    public string? ShiftName { get; set; }
+
+
+    /// <summary>
+    /// 上报地点
+    /// </summary>
+    public string? Location { get; set; }
+    /// <summary>
+    /// 班次
+    /// </summary>
+    public string? Shift { get; set; }
+    /// <summary>
+    /// 上报人员id
+    /// </summary>
+    public long? UserId { get; set; }
+
+    /// <summary>
+    /// 上报人员姓名
+    /// </summary>
+    public string? UserName { get; set; }
+
+    /// <summary>
+    /// 上报内容
+    /// </summary>
+    public string? Content { get; set; }
+
+    /// <summary>
+    /// 图片
+    /// </summary>
+    public string? imgFile { get; set; }
+
+
+    /// <summary>
+    /// 视频
+    /// </summary>
+    public string? videoFile { get; set; }
+
+    /// <summary>
+    /// 语音
+    /// </summary>
+    public string? voiceFile { get; set; }
+
+
+}
+
+/// <summary>
+/// 带班任务
+/// </summary>
+public class LeadingtasksLeadingTasksOutput
+{
+    /// <summary>
+    /// 主键Id
+    /// </summary>
+    public long Id { get; set; }
+
+    /// <summary>
+    /// 计划名称
+    /// </summary>
+    public string? ShiftName { get; set; }
+
+
+    /// <summary>
+    /// 上报地点
+    /// </summary>
+    public string? Location { get; set; }
+    /// <summary>
+    /// 班次
+    /// </summary>
+    public string? Shift { get; set; }
+
+
+
+    /// <summary>
+    /// 处理人员id
+    /// </summary>
+    public long? HandleUserId { get; set; }
+
+    /// <summary>
+    /// 处理人员姓名
+    /// </summary>
+    public string? HandleUserName { get; set; }
+
+
+    /// <summary>
+    /// 下达人id
+    /// </summary>
+    public long? UserId { get; set; }
+
+    /// <summary>
+    /// 下达人姓名
+    /// </summary>
+    public string? UserName { get; set; }
+
+    /// <summary>
+    /// 处理时间
+    /// </summary>
+    public DateTime? UpprocessingTime  { get; set; }
+
+    /// <summary>
+    /// 任务内容
+    /// </summary>
+    public string? Content { get; set; }
+
+
+    /// <summary>
+    /// 状态
+    /// </summary>
+    public string? Status { get; set; }
+    /// <summary>
+    /// 处理结果
+    /// </summary>
+    public string? Description { get; set; }
+    /// <summary>
+    /// 处理时间
+    /// </summary>
+    public DateTime? Time { get; set; }
+
+
+    /// <summary>
+    /// 图片
+    /// </summary>
+    public string? imgFile { get; set; }
+
+
+    /// <summary>
+    /// 视频
+    /// </summary>
+    public string? videoFile { get; set; }
+
+    /// <summary>
+    /// 语音
+    /// </summary>
+    public string? voiceFile { get; set; }
+}
+
+
+
+
 /// <summary>
 /// 带班任务上报数据导入模板实体
 /// </summary>

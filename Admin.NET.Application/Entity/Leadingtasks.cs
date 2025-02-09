@@ -19,62 +19,62 @@ public class Leadingtasks : EntityBaseData
     /// </summary>
     [SugarColumn(ColumnName = "PlanId", ColumnDescription = "带班计划id")]
     public virtual long? PlanId { get; set; }
-    
+
     /// <summary>
     /// 上报人员id
     /// </summary>
     [SugarColumn(ColumnName = "UserId", ColumnDescription = "上报人员id")]
     public virtual long? UserId { get; set; }
-    
+
     /// <summary>
     /// 上报人员姓名
     /// </summary>
     [SugarColumn(ColumnName = "UserName", ColumnDescription = "上报人员姓名", Length = 32)]
     public virtual string? UserName { get; set; }
-    
+
     /// <summary>
     /// 上报人员部门id
     /// </summary>
     [SugarColumn(ColumnName = "DeptId", ColumnDescription = "上报人员部门id")]
     public virtual long? DeptId { get; set; }
-    
+
     /// <summary>
     /// 上报人员部门名称
     /// </summary>
     [SugarColumn(ColumnName = "DeptName", ColumnDescription = "上报人员部门名称", Length = 32)]
     public virtual string? DeptName { get; set; }
-    
+
     /// <summary>
     /// 上报地点
     /// </summary>
     [SugarColumn(ColumnName = "Location", ColumnDescription = "上报地点", Length = 100)]
     public virtual string? Location { get; set; }
-    
+
     /// <summary>
     /// 上报内容
     /// </summary>
     [SugarColumn(ColumnName = "Content", ColumnDescription = "上报内容", Length = 500)]
     public virtual string? Content { get; set; }
-    
+
     /// <summary>
     /// 上报时间
     /// </summary>
     [SugarColumn(ColumnName = "Time", ColumnDescription = "上报时间")]
     public virtual DateTime? Time { get; set; }
-    
+
     /// <summary>
     /// 任务描述
     /// </summary>
     [SugarColumn(ColumnName = "Description", ColumnDescription = "任务描述", Length = 200)]
     public virtual string? Description { get; set; }
-    
+
     /// <summary>
     /// 状态
     /// </summary>
     [Required]
     [SugarColumn(ColumnName = "Status", ColumnDescription = "状态", Length = 10)]
     public virtual string Status { get; set; }
-    
+
     /// <summary>
     /// 任务类型
     /// </summary>

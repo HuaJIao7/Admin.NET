@@ -214,10 +214,6 @@ public class AddLeadingtasksInput
     [Required(ErrorMessage = "任务类型不能为空")]
     [MaxLength(10, ErrorMessage = "任务类型字符长度不能超过10")]
     public string Type { get; set; }
-    /// <summary>
-    /// 文件
-    /// </summary>
-    public List<Leadingtasksfile> files { get; set; }
 }
 
 /// <summary>
@@ -307,8 +303,6 @@ public class UpdateLeadingtasksInput
     [Required(ErrorMessage = "任务类型不能为空")]
     [MaxLength(10, ErrorMessage = "任务类型字符长度不能超过10")]
     public string Type { get; set; }
-    
-    public List<Leadingtasksfile> files { get; set; }
 }
 
 /// <summary>
@@ -401,4 +395,47 @@ public class ImportLeadingtasksInput : BaseImportInput
     [ExporterHeader("*任务类型", Format = "", Width = 25, IsBold = true)]
     public string Type { get; set; }
     
+}
+
+
+
+
+/// <summary>
+/// 带班检查结果输入（未用假的）
+/// </summary>
+public class PageInspectLeadingtasksInput : BasePageInput
+{
+    /// <summary>
+    /// id
+    /// </summary>
+    public long? id { get; set; }
+    /// <summary>
+    /// 计划名称
+    /// </summary>
+    public string? ShiftName { get; set; }
+
+    /// <summary>
+    /// 地点
+    /// </summary>
+    public string? Location { get; set; }
+
+    /// <summary>
+    /// 班次
+    /// </summary>
+    public string? Shift { get; set; }
+
+    /// <summary>
+    /// 下达人姓名
+    /// </summary>
+    public string? UserName { get; set; }
+
+    /// <summary>
+    /// 内容
+    /// </summary>
+    public string? Content { get; set; }
+
+    /// <summary>
+    /// 处理人员姓名
+    /// </summary>
+    public string? HandleUserName { get; set; }
 }

@@ -77,39 +77,39 @@ public class DutyScheduleService : IDynamicApiController, ITransient
     [ApiDescriptionSettings(Name = "Add"), HttpPost]
     public long Add(List<AddDutyScheduleInput> input)
     {
-        var dicData = _dictDataRep.AsQueryable().ClearFilter().Where(x => x.DictTypeId == 628234625433669).ToList();
-        int count = _dutyScheduleRep.AsQueryable().ClearFilter().Where(x => x.DutyDate.Value.Date == input[0].DutyDate.Value.Date).Count();
-        if(count>0)
-            throw Oops.Oh(ErrorCodeEnum.P1000);
+        //var dicData = _dictDataRep.AsQueryable().ClearFilter().Where(x => x.DictTypeId == 628234625433669).ToList();
+        //int count = _dutyScheduleRep.AsQueryable().ClearFilter().Where(x => x.DutyDate.Value.Date == input[0].DutyDate.Value.Date).Count();
+        //if (count > 0)
+        //    throw Oops.Oh(ErrorCodeEnum.P1000);
         int i = 0;
 
-        #region 添加带班计划
-        dicData.ForEach(dic => {
-            Leadershipplan plan = new Leadershipplan();
-            plan.ShiftTime = input[0].DutyDate;
-            plan.Shift = dic.Value;
-            plan.ShiftName = input[0].DeptName + input[0].Flights;
-            plan.Status = "未接班";
-            _leadershipplanRep.Insert(plan);
-            //添加带班计划人员
-            input.ForEach(item =>
-            {
-                if (item.Flights.Equals(dic.Value)||item.Type == "值班领导"||item.Type=="带班领导") 
-                {
-                    Leadershipplanuser planUser = new Leadershipplanuser();
-                    planUser.Type = item.Type;
-                    planUser.UserId = item.UserId;
-                    planUser.DeptId = item.DeptId;
-                    var User = _user.AsQueryable().ClearFilter().Where(x => x.Id == item.UserId).First();
-                    var UserDept = _org.AsQueryable().ClearFilter().Where(x => x.Id == User.OrgId).First();
-                    planUser.PlanId = plan.Id;
-                    planUser.DeptName = UserDept.Name;
-                    planUser.UserName = User.RealName;
-                    _leadershipplanuserRep.Insert(planUser);
-                }
-            });
-        });
-        #endregion
+        //#region 添加带班计划
+        //dicData.ForEach(dic => {
+        //    Leadershipplan plan = new Leadershipplan();
+        //    plan.ShiftTime = input[0].DutyDate;
+        //    plan.Shift = dic.Value;
+        //    plan.ShiftName = input[0].DeptName + input[0].Flights;
+        //    plan.Status = "未接班";
+        //    _leadershipplanRep.Insert(plan);
+        //    //添加带班计划人员
+        //    input.ForEach(item =>
+        //    {
+        //        if (item.Flights.Equals(dic.Value) || item.Type == "值班领导" || item.Type == "带班领导")
+        //        {
+        //            Leadershipplanuser planUser = new Leadershipplanuser();
+        //            planUser.Type = item.Type;
+        //            planUser.UserId = item.UserId;
+        //            planUser.DeptId = item.DeptId;
+        //            var User = _user.AsQueryable().ClearFilter().Where(x => x.Id == item.UserId).First();
+        //            var UserDept = _org.AsQueryable().ClearFilter().Where(x => x.Id == User.OrgId).First();
+        //            planUser.PlanId = plan.Id;
+        //            planUser.DeptName = UserDept.Name;
+        //            planUser.UserName = User.RealName;
+        //            _leadershipplanuserRep.Insert(planUser);
+        //        }
+        //    });
+        //});
+        //#endregion
 
         input.ForEach(item => {
             DutySchedule duty = new DutySchedule();
@@ -124,21 +124,6 @@ public class DutyScheduleService : IDynamicApiController, ITransient
             i++;
         });
 
-
-        //input.ForEach(item => {
-        //    DutySchedule duty = new DutySchedule();
-        //    var User = _user.AsQueryable().ClearFilter().Where(x => x.Id == item.UserId).First();
-        //    var UserDept = _org.AsQueryable().ClearFilter().Where(x => x.Id == User.OrgId).First();
-        //    duty.UserId = User.Id;
-        //    duty.UserName = User.RealName;
-        //    duty.DeptId = UserDept.Id;
-        //    duty.DeptName = UserDept.Name;
-        //    duty.Flights = item.Flights;
-        //    duty.DutyDate = item.DutyDate;
-        //    duty.Type = item.Type;
-        //    _dutyScheduleRep.Insert(duty);
-        //    i++;
-        //});
         return i;
     }
 
@@ -151,10 +136,9 @@ public class DutyScheduleService : IDynamicApiController, ITransient
     [ApiDescriptionSettings(Name = "Update"), HttpPost]
     public async Task Update(List<UpdateDutyScheduleInput> input)
     {
+
         await _dutyScheduleRep.AsDeleteable().Where(x => x.DutyDate == input[0].DutyDate).ExecuteCommandAsync();
         input.ForEach(async item => {
-            //DutySchedule duty = new DutySchedule();
-            //await _dutyScheduleRep.InsertAsync(duty);
             var duty = await _dutyScheduleRep.AsQueryable().ClearFilter().Where(x => x.Id == item.Id).FirstAsync();
             if (duty == null)
                 throw Oops.Oh(ErrorCodeEnum.D1002);

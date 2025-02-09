@@ -502,3 +502,39 @@ public class ImportLeadingchangeshiftsInput : BaseImportInput
     public DateTime? Time { get; set; }
     
 }
+
+
+
+/// <summary>
+/// 带班交接班记录分页查询输入参数
+/// </summary>
+public class PageLeadingchangeshiftsNewInput : BasePageInput
+{
+
+    /// <summary>
+    /// 计划名称
+    /// </summary>
+    public string? ShiftName { get; set; }
+
+    /// <summary>
+    /// 班次
+    /// </summary>
+    public string? Classes { get; set; }
+
+
+    /// <summary>
+    /// 接班人姓名
+    /// </summary>
+    public string? TakeUserName { get; set; }
+
+    /// <summary>
+    /// 交班人姓名
+    /// </summary>
+    public string? UserName { get; set; }
+
+
+    /// <summary>
+    /// 状态
+    /// </summary>
+    public string? Status { get; set; }
+}

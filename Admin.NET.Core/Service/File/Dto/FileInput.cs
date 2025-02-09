@@ -41,6 +41,7 @@ public class FileInput : BaseIdInput
 {
 }
 
+
 public class DeleteFileInput : BaseIdInput
 {
 }
@@ -75,6 +76,18 @@ public class UploadFileInput
     /// 文件类型
     /// </summary>
     public string FileType { get; set; }
+}
+
+/// <summary>
+/// 上传文件
+/// </summary>
+public class UploadFileInputFile
+{
+    /// <summary>
+    /// 文件
+    /// </summary>
+    [Required]
+    public IFormFile File { get; set; }
 }
 
 /// <summary>

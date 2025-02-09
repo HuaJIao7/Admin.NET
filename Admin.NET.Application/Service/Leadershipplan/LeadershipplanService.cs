@@ -6,7 +6,13 @@
 
 using Admin.NET.Application.Entity;
 using Admin.NET.Core.Service;
+using Elastic.Clients.Elasticsearch;
 using Microsoft.AspNetCore.Http;
+using NewLife.Reflection;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Logical;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
+using System;
+using System.Collections.Generic;
 
 namespace Admin.NET.Application;
 
@@ -17,12 +23,14 @@ namespace Admin.NET.Application;
 public class LeadershipplanService : IDynamicApiController, ITransient
 {
     private readonly SqlSugarRepository<Leadershipplan> _leadershipplanRep;
+    private readonly SqlSugarRepository<Leadershipplanuser> _leadershipplanuserRep;
     private readonly ISqlSugarClient _sqlSugarClient;
 
-    public LeadershipplanService(SqlSugarRepository<Leadershipplan> leadershipplanRep, ISqlSugarClient sqlSugarClient)
+    public LeadershipplanService(SqlSugarRepository<Leadershipplan> leadershipplanRep, ISqlSugarClient sqlSugarClient, SqlSugarRepository<Leadershipplanuser> leadershipplanuserRep)
     {
         _leadershipplanRep = leadershipplanRep;
         _sqlSugarClient = sqlSugarClient;
+        _leadershipplanuserRep = leadershipplanuserRep;
     }
 
     /// <summary>
@@ -39,10 +47,261 @@ public class LeadershipplanService : IDynamicApiController, ITransient
             .WhereIF(!string.IsNullOrWhiteSpace(input.Keyword), u => u.Shift.Contains(input.Keyword) || u.Status.Contains(input.Keyword))
             .WhereIF(!string.IsNullOrWhiteSpace(input.Shift), u => u.Shift.Contains(input.Shift.Trim()))
             .WhereIF(!string.IsNullOrWhiteSpace(input.Status), u => u.Status.Contains(input.Status.Trim()))
-            .WhereIF(input.ShiftTimeRange?.Length == 2, u => u.ShiftTime >= input.ShiftTimeRange[0] && u.ShiftTime <= input.ShiftTimeRange[1])
+            //.WhereIF(input.ShiftTimeRange?.Length == 2, u => u.ShiftTime >= input.ShiftTimeRange[0] && u.ShiftTime <= input.ShiftTimeRange[1])
             .Select<LeadershipplanOutput>();
 		return await query.OrderBuilder(input).ToPagedListAsync(input.Page, input.PageSize);
     }
+
+
+    /// <summary>
+    /// 分页查询全天带班计划 🔖
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    [DisplayName("分页查询全天带班计划")]
+    [ApiDescriptionSettings(Name = "OneDayPage"), HttpPost]
+    public async Task<SqlSugarPagedList<LeadershipplanOneDayOutput>> OneDayPage(PageLeadershipplanOneDayInput input)
+    {
+        input.Keyword = input.Keyword?.Trim();
+
+        var query = _leadershipplanRep.AsQueryable()
+            .LeftJoin<Leadershipplan>((o, l1) => o.ShiftTime.ToDateTime().ToString("yyyy-MM-dd") == l1.ShiftTime.ToDateTime().ToString("yyyy-MM-dd") && l1.Shift=="早班" )
+            .LeftJoin<Leadershipplanuser>((o, l1, r1) => l1.Id == r1.PlanId)
+            .LeftJoin<Leadershipplan>((o, l1, r1, l2) => o.ShiftTime.ToDateTime().ToString("yyyy-MM-dd") == l2.ShiftTime.ToDateTime().ToString("yyyy-MM-dd") && l2.Shift == "中班")
+            .LeftJoin<Leadershipplanuser>((o, l1, r1, l2, r2) => l2.Id == r2.PlanId)
+            .LeftJoin<Leadershipplan>((o, l1, r1, l2, r2, l3) => o.ShiftTime.ToDateTime().ToString("yyyy-MM-dd") == l3.ShiftTime.ToDateTime().ToString("yyyy-MM-dd") && l3.Shift == "晚班")
+            .LeftJoin<Leadershipplanuser>((o, l1, r1, l2, r2, l3, r3) => l3.Id == r3.PlanId)
+            .WhereIF(!string.IsNullOrWhiteSpace(input.ShiftName), (o, l1, r1, l2, r2, l3, r3) => o.ShiftName.Contains(input.ShiftName.Trim()))
+            .WhereIF(!string.IsNullOrWhiteSpace(input.UserName), (o, l1, r1, l2, r2, l3, r3) => r1.UserName.Contains(input.UserName.Trim()) || r2.UserName.Contains(input.UserName.Trim()) || r3.UserName.Contains(input.UserName.Trim()))
+            .WhereIF(!string.IsNullOrWhiteSpace(input.Status), (o, l1, r1, l2, r2, l3, r3) => o.Status.Contains(input.Status.Trim()))
+            .WhereIF(input.ShiftTimeRange.HasValue, (o, l1, r1, l2, r2, l3, r3) => o.ShiftTime.ToDateTime().ToString("yyyy-MM-dd") == input.ShiftTimeRange.ToDateTime().ToString("yyyy-MM-dd"))
+            .GroupBy(o => o.ShiftTime.ToDateTime().ToString("yyyy-MM-dd"))
+            .Select((o, l1,r1,l2,r2,l3,r3) => new LeadershipplanOneDayOutput
+            {
+                ShiftName = o.ShiftName,//计划名称
+                ShiftMorning = l1.Shift,//班次（早班）
+                StaffMorning = r1.UserName,//人员（早班）
+                ShiftNoon = l2.Shift,//班次（中班）
+                StaffNoon = r2.UserName,//人员（中班）
+                Shiftevening = l3.Shift,//班次（晚班）
+                Staffevening = r3.UserName,//人员（晚班）
+                ShiftTime = o.ShiftTime.ToDateTime().ToString("yyyy-MM-dd"),//带班时间
+                Status = o.Status  //状态
+            });
+        return await query.ToPagedListAsync(input.Page, input.PageSize);
+
+    }
+
+
+    /// <summary>
+    /// 增加带班计划 ➕
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    [DisplayName("增加带班计划")]
+    [ApiDescriptionSettings(Name = "AddOneDay"), HttpPost]
+    public async Task<long> AddOneDay(AddLeadershipplanOneDayInput input)
+    {
+        var entity = input.Adapt<Leadershipplan>();
+        Leadershipplan leadershipplan = new Leadershipplan();
+        leadershipplan.ShiftName = input.ShiftName;
+        leadershipplan.ShiftTime = input.ShiftTime;
+        leadershipplan.Shift = input.ShiftMorning;
+        leadershipplan.Status = "正常";
+        await _leadershipplanRep.InsertAsync(leadershipplan);//新增早班信息
+        //新增早班人员信息  先通过姓名查询出人员信息和部门信息
+
+
+        Leadershipplanuser leadershipplanuser = new Leadershipplanuser();
+        leadershipplanuser.PlanId = leadershipplan.Id;
+        leadershipplanuser.Type = "带班领导";
+        leadershipplanuser.UserId = 1;//领班领导id查询
+        leadershipplanuser.UserName = input.ClassLeaderMorning;
+        leadershipplanuser.DeptId = 1;//领班领导id查询出部门名称和部门id
+        leadershipplanuser.DeptName = input.ClassLeaderMorning;
+        await _leadershipplanuserRep.InsertAsync(leadershipplanuser);//新增早班带班领导信息
+
+        leadershipplanuser = new Leadershipplanuser();
+        leadershipplanuser.PlanId = leadershipplan.Id;
+        leadershipplanuser.Type = "值班领导";
+        leadershipplanuser.UserId = 1;//领班领导id查询
+        leadershipplanuser.UserName = input.DutyLeaderMorning;
+        leadershipplanuser.DeptId = 1;//领班领导id查询出部门名称和部门id
+        leadershipplanuser.DeptName = input.DutyLeaderMorning;
+        await _leadershipplanuserRep.InsertAsync(leadershipplanuser);//新增早班值班领导信息
+
+
+        leadershipplanuser = new Leadershipplanuser();
+        leadershipplanuser.PlanId = leadershipplan.Id;
+        leadershipplanuser.Type = "值班人员";
+        leadershipplanuser.UserId = 1;//领班领导id查询
+        leadershipplanuser.UserName = input.DutyMorning;
+        leadershipplanuser.DeptId = 1;//领班领导id查询出部门名称和部门id
+        leadershipplanuser.DeptName = input.DutyMorning;
+        await _leadershipplanuserRep.InsertAsync(leadershipplanuser);//新增早班值班人员信息
+
+        leadershipplanuser = new Leadershipplanuser();
+        leadershipplanuser.PlanId = leadershipplan.Id;
+        leadershipplanuser.Type = "带班人员";
+        leadershipplanuser.UserId = 1;//领班领导id查询
+        leadershipplanuser.UserName = input.ClassrMorning;
+        leadershipplanuser.DeptId = 1;//领班领导id查询出部门名称和部门id
+        leadershipplanuser.DeptName = input.ClassrMorning;
+        await _leadershipplanuserRep.InsertAsync(leadershipplanuser);//新增早班带班人员信息
+
+
+        leadershipplan = new Leadershipplan();
+        leadershipplan.ShiftName = input.ShiftName;
+        leadershipplan.ShiftTime = input.ShiftTime;
+        leadershipplan.Shift = input.ShiftNoon;
+        leadershipplan.Status = "正常";
+        await _leadershipplanRep.InsertAsync(leadershipplan);//新增中班信息
+
+        leadershipplanuser = new Leadershipplanuser();
+        leadershipplanuser.PlanId = leadershipplan.Id;
+        leadershipplanuser.Type = "带班领导";
+        leadershipplanuser.UserId = 1;//领班领导id查询
+        leadershipplanuser.UserName = input.ClassLeaderNoon;
+        leadershipplanuser.DeptId = 1;//领班领导id查询出部门名称和部门id
+        leadershipplanuser.DeptName = input.ClassLeaderNoon;
+        await _leadershipplanuserRep.InsertAsync(leadershipplanuser);//新增中班带班领导信息
+
+        leadershipplanuser = new Leadershipplanuser();
+        leadershipplanuser.PlanId = leadershipplan.Id;
+        leadershipplanuser.Type = "值班领导";
+        leadershipplanuser.UserId = 1;//领班领导id查询
+        leadershipplanuser.UserName = input.DutyLeaderNoon;
+        leadershipplanuser.DeptId = 1;//领班领导id查询出部门名称和部门id
+        leadershipplanuser.DeptName = input.DutyLeaderNoon;
+        await _leadershipplanuserRep.InsertAsync(leadershipplanuser);//新增中班值班领导信息
+
+
+        leadershipplanuser = new Leadershipplanuser();
+        leadershipplanuser.PlanId = leadershipplan.Id;
+        leadershipplanuser.Type = "值班人员";
+        leadershipplanuser.UserId = 1;//领班领导id查询
+        leadershipplanuser.UserName = input.DutyNoon;
+        leadershipplanuser.DeptId = 1;//领班领导id查询出部门名称和部门id
+        leadershipplanuser.DeptName = input.DutyNoon;
+        await _leadershipplanuserRep.InsertAsync(leadershipplanuser);//新增中班值班人员信息
+
+        leadershipplanuser = new Leadershipplanuser();
+        leadershipplanuser.PlanId = leadershipplan.Id;
+        leadershipplanuser.Type = "带班人员";
+        leadershipplanuser.UserId = 1;//领班领导id查询
+        leadershipplanuser.UserName = input.ClassrNoon;
+        leadershipplanuser.DeptId = 1;//领班领导id查询出部门名称和部门id
+        leadershipplanuser.DeptName = input.ClassrNoon;
+        await _leadershipplanuserRep.InsertAsync(leadershipplanuser);//新增中班带班人员信息
+
+
+
+        leadershipplan = new Leadershipplan();
+        leadershipplan.ShiftName = input.ShiftName;
+        leadershipplan.ShiftTime = input.ShiftTime;
+        leadershipplan.Shift = input.ShiftEvening;
+        leadershipplan.Status = "正常";
+        await _leadershipplanRep.InsertAsync(leadershipplan);//新增晚班信息
+
+        leadershipplanuser = new Leadershipplanuser();
+        leadershipplanuser.PlanId = leadershipplan.Id;
+        leadershipplanuser.Type = "带班领导";
+        leadershipplanuser.UserId = 1;//领班领导id查询
+        leadershipplanuser.UserName = input.ClassLeadertEvening;
+        leadershipplanuser.DeptId = 1;//领班领导id查询出部门名称和部门id
+        leadershipplanuser.DeptName = input.ClassLeadertEvening;
+        await _leadershipplanuserRep.InsertAsync(leadershipplanuser);//新增晚班带班领导信息
+
+        leadershipplanuser = new Leadershipplanuser();
+        leadershipplanuser.PlanId = leadershipplan.Id;
+        leadershipplanuser.Type = "值班领导";
+        leadershipplanuser.UserId = 1;//领班领导id查询
+        leadershipplanuser.UserName = input.DutyLeaderEvening;
+        leadershipplanuser.DeptId = 1;//领班领导id查询出部门名称和部门id
+        leadershipplanuser.DeptName = input.DutyLeaderEvening;
+        await _leadershipplanuserRep.InsertAsync(leadershipplanuser);//新增晚班值班领导信息
+
+
+        leadershipplanuser = new Leadershipplanuser();
+        leadershipplanuser.PlanId = leadershipplan.Id;
+        leadershipplanuser.Type = "值班人员";
+        leadershipplanuser.UserId = 1;//领班领导id查询
+        leadershipplanuser.UserName = input.DutyEvening;
+        leadershipplanuser.DeptId = 1;//领班领导id查询出部门名称和部门id
+        leadershipplanuser.DeptName = input.DutyEvening;
+        await _leadershipplanuserRep.InsertAsync(leadershipplanuser);//新增晚班值班人员信息
+
+        leadershipplanuser = new Leadershipplanuser();
+        leadershipplanuser.PlanId = leadershipplan.Id;
+        leadershipplanuser.Type = "带班人员";
+        leadershipplanuser.UserId = 1;//领班领导id查询
+        leadershipplanuser.UserName = input.ClassrEvening;
+        leadershipplanuser.DeptId = 1;//领班领导id查询出部门名称和部门id
+        leadershipplanuser.DeptName = input.ClassrEvening;
+        await _leadershipplanuserRep.InsertAsync(leadershipplanuser);//新增晚班带班人员信息
+
+        return leadershipplan.Id;
+    }
+
+
+
+
+
+    /// <summary>
+    /// 通过班次查找调休人员 ℹ️
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    [DisplayName("通过班次查找调休人员")]
+    [ApiDescriptionSettings(Name = "UserDetail"), HttpPost]
+    public async Task<SqlSugarPagedList<LeadershipplanuserOutput>> UserDetail(PageLeadershipplannOneDayShiftInput input)
+    {
+        input.Keyword = input.Keyword?.Trim();
+
+        var query = _leadershipplanuserRep.AsQueryable()
+             .LeftJoin<Leadershipplan>((o, l1) => o.PlanId == l1.Id)
+             .WhereIF(!string.IsNullOrWhiteSpace(input.Shift), (o, l1) => l1.Shift.Contains(input.Shift.Trim()))
+             .WhereIF(input.ShiftTime.HasValue, (o, l1) => l1.ShiftTime.ToDateTime().ToString("yyyy-MM-dd") == input.ShiftTime.ToDateTime().ToString("yyyy-MM-dd"))
+
+             .Select<LeadershipplanuserOutput>();
+        return await query.OrderBuilder(input).ToPagedListAsync(input.Page, input.PageSize);
+
+    }
+
+
+
+
+    /// <summary>
+    /// 修改替班 ✏️
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    [DisplayName("修改替班")]
+    [ApiDescriptionSettings(Name = "UpdateDay"), HttpPost]
+    public async Task UpdateDay(UpdateLeadershipplanUserDayInput input)
+    {
+        var lu = _leadershipplanuserRep.AsQueryable().Where(x => x.Id == input.Id);
+        var luPlanId = lu.Select(x => x.PlanId).ToList().FirstOrDefault();
+        var luType = lu.Select(x => x.Type).ToList().FirstOrDefault();
+        var luUserId = lu.Select(x => x.UserId).ToList().FirstOrDefault();
+        var luDeptId = lu.Select(x => x.DeptId).ToList().FirstOrDefault();
+        var luDeptName = lu.Select(x => x.DeptName).ToList().FirstOrDefault();
+        //查人员表，查出替班人的人员id及部门id名称
+
+
+        Leadershipplanuser leadershipplanuser = new Leadershipplanuser();
+        leadershipplanuser.Id = input.Id.ToLong();
+        leadershipplanuser.PlanId = luPlanId;
+        leadershipplanuser.Type = luType;
+        leadershipplanuser.UserId = luUserId;
+        leadershipplanuser.UserName = input.reliefUser;
+        leadershipplanuser.DeptId = luDeptId;
+        leadershipplanuser.DeptName = luDeptName;
+        await _leadershipplanuserRep.AsUpdateable(leadershipplanuser)
+        .ExecuteCommandAsync();
+    }
+
+
 
     /// <summary>
     /// 获取带班计划详情 ℹ️
@@ -154,10 +413,9 @@ public class LeadershipplanService : IDynamicApiController, ITransient
                 {
                     
                     // 校验并过滤必填基本类型为null的字段
-                    var rows = pageItems.Where(x => {
-                        return true;
-                    }).Adapt<List<Leadershipplan>>();
-                    
+                    var rows = pageItems.Adapt<List<Leadershipplan>>();
+                    Thread.Sleep(1000);
+
                     var storageable = _leadershipplanRep.Context.Storageable(rows)
                         .SplitError(it => it.Item.Shift?.Length > 32, "班次长度不能超过32个字符")
                         .SplitError(it => it.Item.Status?.Length > 32, "状态长度不能超过32个字符")

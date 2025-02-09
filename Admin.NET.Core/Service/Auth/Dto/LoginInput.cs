@@ -95,8 +95,8 @@ public class UserRegistrationInput
     /// 验证码
     /// </summary>
     /// <example>123456</example>
-    [Required(ErrorMessage = "验证码不能为空")]
-    public string Code { get; set; }
+    //[Required(ErrorMessage = "验证码不能为空")]
+    public virtual string? Code { get; set; }
 
     /// <summary>
     /// 验证码Id

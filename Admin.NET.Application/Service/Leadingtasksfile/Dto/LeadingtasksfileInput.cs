@@ -5,6 +5,8 @@
 // 不得利用本项目从事危害国家安全、扰乱社会秩序、侵犯他人合法权益等法律法规禁止的活动！任何基于本项目二次开发而产生的一切法律纠纷和责任，我们不承担任何责任！
 
 using Admin.NET.Core;
+using Admin.NET.Core.Service;
+using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 
 namespace Admin.NET.Application;
@@ -65,25 +67,14 @@ public class PageLeadingtasksfileInput : BasePageInput
 /// <summary>
 /// 带班任务上报文件增加输入参数
 /// </summary>
-public class AddLeadingtasksfileInput
+public class AddLeadingtasksfileInput: UploadFileInputFile
 {
     /// <summary>
     /// 任务id
     /// </summary>
     public long? TaskId { get; set; }
-    
-    /// <summary>
-    /// 文件类型
-    /// </summary>
-    [MaxLength(32, ErrorMessage = "文件类型字符长度不能超过32")]
-    public string? Type { get; set; }
-    
-    /// <summary>
-    /// 文件路径
-    /// </summary>
-    [MaxLength(500, ErrorMessage = "文件路径字符长度不能超过500")]
-    public string? Url { get; set; }
-    
+
+
 }
 
 /// <summary>
