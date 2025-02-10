@@ -13,6 +13,7 @@ using OfficeOpenXml.FormulaParsing.Excel.Functions.Logical;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace Admin.NET.Application;
 
@@ -50,6 +51,17 @@ public class LeadershipplanService : IDynamicApiController, ITransient
             //.WhereIF(input.ShiftTimeRange?.Length == 2, u => u.ShiftTime >= input.ShiftTimeRange[0] && u.ShiftTime <= input.ShiftTimeRange[1])
             .Select<LeadershipplanOutput>();
 		return await query.OrderBuilder(input).ToPagedListAsync(input.Page, input.PageSize);
+    }
+
+    [DisplayName("查询带班计划数量")]
+    [ApiDescriptionSettings(Name = "GetListCount"), HttpPost]
+    public async Task<int> GetListCount()
+    {
+        //var qq = _leadershipplanRep.AsQueryable();
+        // 查询 Leadershipplan 实体的条数
+        var count = await _leadershipplanRep.AsQueryable()
+            .Where(u => u.Status == "1").Select<Leadershipplan>().CountAsync();
+        return count;
     }
 
 

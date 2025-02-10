@@ -28,6 +28,11 @@ public class SqlSugarPagedList<TEntity>
     public int Total { get; set; }
 
     /// <summary>
+    /// 状态是
+    /// </summary>
+    public int StatusNoCount { get; set; }
+
+    /// <summary>
     /// 总页数
     /// </summary>
     public int TotalPages { get; set; }
@@ -41,6 +46,8 @@ public class SqlSugarPagedList<TEntity>
     /// 是否有上一页
     /// </summary>
     public bool HasPrevPage { get; set; }
+
+
 
     /// <summary>
     /// 是否有下一页
@@ -136,6 +143,7 @@ public static class SqlSugarPagedExtensions
     /// <param name="pageIndex">当前页码，从1开始</param>
     /// <param name="pageSize">页码容量</param>
     /// <returns></returns>
+    //private static SqlSugarPagedList<TEntity> CreateSqlSugarPagedList<TEntity>(IEnumerable<TEntity> items, int total, int pageIndex, int pageSize)
     private static SqlSugarPagedList<TEntity> CreateSqlSugarPagedList<TEntity>(IEnumerable<TEntity> items, int total, int pageIndex, int pageSize)
     {
         var totalPages = pageSize > 0 ? (int)Math.Ceiling(total / (double)pageSize) : 0;
@@ -147,7 +155,7 @@ public static class SqlSugarPagedExtensions
             Total = total,
             TotalPages = totalPages,
             HasNextPage = pageIndex < totalPages,
-            HasPrevPage = pageIndex - 1 > 0
+            HasPrevPage = pageIndex - 1 > 0,
         };
     }
 }

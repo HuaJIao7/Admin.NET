@@ -317,7 +317,7 @@ public class SysUserService : IDynamicApiController, ITransient
     public virtual async Task<int> UpdateBaseInfo(SysUser user)
     {
         return await _sysUserRep.AsUpdateable(user)
-            .IgnoreColumns(u => new { u.CreateTime, u.Account, u.Password, u.AccountType, u.OrgId, u.PosId }).ExecuteCommandAsync();
+            .IgnoreColumns(u => new { u.CreateTime, u.Password, u.AccountType, u.OrgId, u.PosId }).ExecuteCommandAsync();
     }
 
     /// <summary>
