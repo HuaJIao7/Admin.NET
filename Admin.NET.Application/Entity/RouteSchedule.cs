@@ -31,6 +31,6 @@ public class RouteSchedule : EntityBaseData
     /// </summary>
     public virtual string? PointName { get; set; }
 
-    public virtual List<RouteSchedule> PointTables { get; set; }
+    //public virtual List<RouteSchedule> PointTables { get; set; }
 
 }

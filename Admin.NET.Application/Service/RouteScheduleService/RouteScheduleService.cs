@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Admin.NET.Application.Entity;
 using Admin.NET.Application.Service.RouteScheduleService.Dto;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Admin.NET.Application.Service.RouteScheduleService;
 
@@ -21,13 +22,16 @@ namespace Admin.NET.Application.Service.RouteScheduleService;
 public class RouteScheduleService: IDynamicApiController, ITransient
 {
     private readonly SqlSugarRepository<RouteSchedule> _RouteSchedule;
+    private readonly SqlSugarRepository<PointTable> _PointTable;
+    
     private readonly SqlSugarRepository<RouteScheduleDto> _RouteScheduledto;
 
     public RouteScheduleService(
-        SqlSugarRepository<RouteSchedule> RouteSchedule, SqlSugarRepository<RouteScheduleDto> RouteScheduledto)
+        SqlSugarRepository<RouteSchedule> RouteSchedule, SqlSugarRepository<RouteScheduleDto> RouteScheduledto, SqlSugarRepository<PointTable> pointTable)
     {
         _RouteSchedule = RouteSchedule;
         _RouteScheduledto = RouteScheduledto;
+        _PointTable = pointTable;
     }
 
     [DisplayName("路线表增加")]
@@ -83,32 +87,20 @@ public class RouteScheduleService: IDynamicApiController, ITransient
     }
     [DisplayName("路线表查询")]
     [ApiDescriptionSettings(Name = "Page"), HttpPost]
-    public async Task<SqlSugarPagedList<RouteSchedule>> Page(RouteScheduleInput input)
+    public async Task<SqlSugarPagedList<RouteScheduleDto>> Page(RouteScheduleInput input)
     {
-        //var query = _RouteSchedule.AsQueryable()
-        //.Where(u => u.InspectionRecordId == input.InspectionRecordId || input.InspectionRecordId == null)
-        //.Where(u => u.RouteName == input.RouteName || input.RouteName == null)
-        //.Select<RouteSchedule>();
 
         var query = _RouteSchedule.AsQueryable()
         .Where(u => u.InspectionRecordId == input.InspectionRecordId || input.InspectionRecordId == null)
         .Where(u => u.RouteName == input.RouteName || input.RouteName == null)
-        .GroupBy(u => new { u.InspectionRecordId, u.RouteName })  // 根据RouteId和RouteName分组
-        .Select(g => new RouteSchedule
+        .Select(route => new RouteScheduleDto
         {
-            RouteName = g.RouteName,
-            PointTables = g.PointTables.ToList()  // 假设PointId和PointName是点位信息
-        }).ToList();
+            RouteName = route.RouteName,
+            // 使用 SqlFunc.Subquery 来进行子查询
+            PointTables = SqlFunc.Subqueryable<PointTable>().Where(x => x.InspectionRecordId == input.QueryID).ToList()
+        });
 
 
-        //var query = _RouteSchedule.AsQueryable()
-        //   .Where(u => u.InspectionRecordId == input.InspectionRecordId || input.InspectionRecordId == null)
-        //   .Where(u => u.RouteName == input.RouteName || input.RouteName == null)
-        //    .LeftJoin<PointTable>((a, b) => a.Id == b.InspectionRecordId)
-        //   .Select(a => new RouteSchedule
-        //   {
-        //       PointTables = _RouteSchedule.AsQueryable().Where(o => o.InspectionRecordId == a.Id).ToList()
-        //   });
 
         return await query.OrderBuilder(input).ToPagedListAsync(input.Page, input.PageSize);
     }
