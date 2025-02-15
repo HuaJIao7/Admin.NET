@@ -62,10 +62,9 @@ public class UserInformationService : IDynamicApiController, ITransient
     /// <param name="personnelCardCode"></param>
     /// <param name="jobTypes"></param>
     /// <returns></returns>
-    // [AllowAnonymous]
     [DisplayName("查询用户信息表")]
     [ApiDescriptionSettings(Name = "GetConditionUserInformation"), HttpPost]
-    public async Task<SqlSugarPagedList<Entity.UserInformation>> GetConditionUserInformation(UserInformationInput input, string name ,string personnelCardCode ,string jobTypes)
+    public async Task<SqlSugarPagedList<UserInformationDto>> GetConditionUserInformation(UserInformationInput input)
     {
         var query = _userinformetion.AsQueryable()
             .WhereIF(!string.IsNullOrWhiteSpace(input.PersonnelCardCode), u => u.PersonnelCardCode.Contains(input.PersonnelCardCode.Trim()))
@@ -77,9 +76,27 @@ public class UserInformationService : IDynamicApiController, ITransient
             .WhereIF(input.BirthDate != null, u => u.BirthDate == input.BirthDate)
             .WhereIF(input.IsItLeader != null, u => u.IsItLeader == input.IsItLeader)
             .WhereIF(input.IsItSpecialPersonnel != null, u => u.IsItSpecialPersonnel == input.IsItSpecialPersonnel)
-            .WhereIF(!name.IsNullOrEmpty(), u => u.Name == name)
-            .WhereIF(!name.IsNullOrEmpty(), u => u.PersonnelCardCode == personnelCardCode)
-            .WhereIF(!name.IsNullOrEmpty(), u => u.JobTypes == jobTypes);
+            .WhereIF(input.UserId != null, u => u.UserId == input.UserId)
+            .WhereIF(!input.name.IsNullOrEmpty(), u => u.Name == input.name)
+            //.WhereIF(!input.personnelCardCode.IsNullOrEmpty(), u => u.PersonnelCardCode == input.personnelCardCode)
+            .WhereIF(!input.jobTypes.IsNullOrEmpty(), u => u.JobTypes == input.jobTypes)
+            .LeftJoin<SysUser>((a, b) => a.UserId == b.Id)
+            .Select((a,b) => new UserInformationDto
+            {
+                Sex = b.Sex,
+                Phone = b.Phone,
+                Email = b.Email,
+                Account = b.Account,
+                Birthday = b.Birthday,
+                PosName = b.PosId,
+                //OrgName = d.Name,
+                //RoleName = b.RoleName,
+                RealName = b.RealName,
+                PosId = b.PosId,
+                OrgId = b.OrgId,
+                AccountType = b.AccountType
+
+            });
         return await query.OrderBuilder(input).ToPagedListAsync(input.Page, input.PageSize);
     }
     

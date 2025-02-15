@@ -62,4 +62,9 @@ public class UserInformation : EntityBaseData
     /// 是否特种人员
     /// </summary>
     public virtual bool? IsItSpecialPersonnel { get; set; }
+
+    /// <summary>
+    /// 账号
+    /// </summary>
+    public virtual long? UserId { get; set; }
 }

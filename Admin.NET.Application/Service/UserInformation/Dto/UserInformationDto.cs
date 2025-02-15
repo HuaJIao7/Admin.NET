@@ -61,4 +61,19 @@ public class UserInformationDto : Template
     /// 是否特种人员
     /// </summary>
     public bool? IsItSpecialPersonnel { get; set; }
+
+    public GenderEnum Sex { get; set; } = GenderEnum.Male;
+    public string? Phone { get; set; }
+    public string? Email { get; set; }
+    public string? Account { get; set; }
+    public DateTime? Birthday { get; set; }
+    public long? PosName { get; set; }
+    public string? OrgName { get; set; }
+    public string? RoleName { get; set; }
+    public string? RealName { get; set; }
+    public long? PosId { get; set; }
+    public virtual long? OrgId { get; set; }
+    public AccountTypeEnum AccountType { get; set; } = AccountTypeEnum.NormalUser;
+
+
 }

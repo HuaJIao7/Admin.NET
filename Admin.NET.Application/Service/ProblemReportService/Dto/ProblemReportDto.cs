@@ -10,37 +10,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Admin.NET.Application.Entity;
-
-[Tenant("1300000000001")]
-[SugarTable(null, "巡检记录")]
-public class InspectionRecord : EntityBaseData
+namespace Admin.NET.Application.Service.ProblemReportService.Dto;
+public class ProblemReportDto : Template
 {
+    /// <summary>
+    /// 用户信息Id
+    /// </summary>
+    public virtual string? UserInformation { get; set; }
 
     /// <summary>
-    /// 名称
+    /// 巡检记录Id
     /// </summary>
-    public virtual string? Name { get; set; }
+    public virtual string? InspectionRecordId { get; set; }
 
     /// <summary>
-    /// 用户信息
+    /// 上报内容
     /// </summary>
-    public virtual long? UserInformationId { get; set; }
-
-    /// <summary>
-    /// 班次
-    /// </summary>
-    public string? Shift { get; set; }
-
-    /// <summary>
-    /// 周期
-    /// </summary>
-    public string? Cycle { get; set; }
-
-    /// <summary>
-    /// 路线
-    /// </summary>
-    public string? Route { get; set; }
+    public virtual string? Content { get; set; }
 
     /// <summary>
     /// 处理视频
@@ -59,17 +45,4 @@ public class InspectionRecord : EntityBaseData
     /// </summary>
     [SugarColumn(ColumnName = "HandleImg", ColumnDescription = "处理图片", Length = 500)]
     public virtual string? HandleImg { get; set; }
-
-    /// <summary>
-    /// 带班计划id
-    /// </summary>
-    public virtual long? leadershipplanId { get; set; }
-
-    /// <summary>
-    /// 状态
-    /// </summary>
-    public string State { get; set; }
-
-
-
 }

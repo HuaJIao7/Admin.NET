@@ -10,16 +10,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Admin.NET.Application.Entity;
-
-[Tenant("1300000000001")]
-[SugarTable(null, "巡检计划")]
-public class InspectionPlan : EntityBaseData
+namespace Admin.NET.Application.Service.ReportInspectionRecordsService.Dto;
+public class ReportInspectionRecordsDto : Template
 {
     /// <summary>
     /// 用户信息
     /// </summary>
-    
     public virtual long? UserInformationId { get; set; }
 
     /// <summary>
@@ -27,8 +23,32 @@ public class InspectionPlan : EntityBaseData
     /// </summary>
     public string? Route { get; set; }
 
+
     /// <summary>
-    /// 执行时间
+    /// 上报内容
     /// </summary>
-    public virtual string? ExecutionTime { get; set; }
+    public virtual string? ReportContent { get; set; }
+
+    /// <summary>
+    /// 处理视频
+    /// </summary>
+    [SugarColumn(ColumnName = "HandleVideo", ColumnDescription = "处理视频", Length = 500)]
+    public virtual string? HandleVideo { get; set; }
+
+    /// <summary>
+    /// 处理音频
+    /// </summary>
+    [SugarColumn(ColumnName = "HandleMp3", ColumnDescription = "处理音频", Length = 500)]
+    public virtual string? HandleMp3 { get; set; }
+
+    /// <summary>
+    /// 处理图片
+    /// </summary>
+    [SugarColumn(ColumnName = "HandleImg", ColumnDescription = "处理图片", Length = 500)]
+    public virtual string? HandleImg { get; set; }
+
+    /// <summary>
+    /// 状态
+    /// </summary>
+    public string State { get; set; }
 }

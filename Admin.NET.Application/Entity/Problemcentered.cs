@@ -109,6 +109,12 @@ public class Problemcentered : EntityBaseData
     public virtual string? Status { get; set; }
 
     /// <summary>
+    /// 状态
+    /// </summary>
+    [SugarColumn(ColumnName = "Status", ColumnDescription = "异常状态", Length = 32)]
+    public virtual string? AbnormalState { get; set; }
+
+    /// <summary>
     /// 处理人id
     /// </summary>
     [SugarColumn(ColumnName = "HandleUserId", ColumnDescription = "处理人id")]

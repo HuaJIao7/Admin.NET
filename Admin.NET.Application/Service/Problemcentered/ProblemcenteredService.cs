@@ -173,6 +173,7 @@ public class ProblemcenteredService : IDynamicApiController, ITransient
                     ReportMp3 = it.ReportMp3,
                     ReportTime = it.ReportTime,
                     Status = it.Status,
+                    AbnormalState = it.AbnormalState,
                     HandleUserId = it.HandleUserId,
                     HandleUserName = it.HandleUserName,
                     HandleDeptId = it.HandleDeptId,
@@ -222,6 +223,7 @@ public class ProblemcenteredService : IDynamicApiController, ITransient
             .WhereIF(!string.IsNullOrWhiteSpace(input.ReportVideo), u => u.ReportVideo.Contains(input.ReportVideo.Trim()))
             .WhereIF(!string.IsNullOrWhiteSpace(input.ReportMp3), u => u.ReportMp3.Contains(input.ReportMp3.Trim()))
             .WhereIF(!string.IsNullOrWhiteSpace(input.Status), u => u.Status.Contains(input.Status.Trim()))
+            .WhereIF(!string.IsNullOrWhiteSpace(input.AbnormalState), u => u.AbnormalState.Contains(input.AbnormalState.Trim()))
             .WhereIF(!string.IsNullOrWhiteSpace(input.HandleUserName), u => u.HandleUserName.Contains(input.HandleUserName.Trim()))
             .WhereIF(!string.IsNullOrWhiteSpace(input.HandleDeptName), u => u.HandleDeptName.Contains(input.HandleDeptName.Trim()))
             .WhereIF(!string.IsNullOrWhiteSpace(input.HandleContent), u => u.HandleContent.Contains(input.HandleContent.Trim()))
@@ -243,6 +245,7 @@ public class ProblemcenteredService : IDynamicApiController, ITransient
                 u.UserName.Contains(name))
             .WhereIF(!string.IsNullOrEmpty(handleUserName), u => u.HandleUserName.Contains(handleUserName))
             .WhereIF(!string.IsNullOrEmpty(status), u => u.Status.Contains(status)) // 假设 Status 是字段名
+            //.WhereIF(!string.IsNullOrEmpty(AbnormalState), u => u.AbnormalState.Contains(AbnormalState)) // 假设 Status 是字段名
                                                                                     //.Where(u => u.ReportTime >= dateTime.ReportTimeMinimum && u.ReportTime <= dateTime.ReportTimeMax) // 筛选报送时间
             .Where(u =>
                 (input.ReportTimeMinimum == null && input.ReportTimeMax == null) ||
@@ -285,14 +288,6 @@ public class ProblemcenteredService : IDynamicApiController, ITransient
         try
         {
             var entity = input.Adapt<Entity.Problemcentered>();
-            //var repUser = await _userRep.AsQueryable().ClearFilter().Where(x => x.Id == entity.UserId).FirstAsync();
-            //var repUserDept = await _orgRep.AsQueryable().ClearFilter().Where(x => x.Id == repUser.OrgId).FirstAsync();
-            //entity.UserName = repUser == null ? "" : repUser.RealName;
-            //entity.UserDeptName = repUserDept == null ? "" : repUserDept.Name;
-            //entity.ReportTime = DateTime.Now;
-            //entity.Status = "待派单";
-            //entity.GiveUpCount = 0;
-            //return await _problemcenteredRepository.InsertAsync(entity) ? entity.Id : 0;
             entity.PlanId = input.PlanId;
             entity.PlanName = input.PlanName;
             entity.PlaceId = input.PlaceId;
@@ -308,6 +303,7 @@ public class ProblemcenteredService : IDynamicApiController, ITransient
             entity.ReportMp3 = input.ReportMp3;
             entity.ReportTime = DateTime.Now;
             entity.Status = "待派单";
+            entity.AbnormalState = "null";
             entity.HandleUserId = input.HandleUserId;
             entity.HandleUserName = input.HandleUserName;
             entity.HandleDeptId = input.HandleDeptId;

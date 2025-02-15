@@ -91,6 +91,7 @@ public class ProblemcenteredInput
     /// 状态
     /// </summary>
     public virtual string? Status { get; set; }
+    public virtual string? AbnormalState { get; set; }
 
     /// <summary>
     /// 处理人id

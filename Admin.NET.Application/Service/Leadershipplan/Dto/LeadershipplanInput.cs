@@ -75,6 +75,9 @@ public class AddLeadershipplanOneDayInput
     /// 班次早班
     /// </summary>
     public string? ShiftMorning { get; set; }
+
+    public string? Status { get; set; }
+
     /// <summary>
     /// 带班人员早班
     /// </summary>
@@ -134,6 +137,7 @@ public class AddLeadershipplanOneDayInput
 /// </summary>
 public class PageLeadershipplanOneDayInput : BasePageInput
 {
+    public DateTime TimeTheDay { get; set; }
 
     /// <summary>
     /// 计划名称

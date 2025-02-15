@@ -90,6 +90,7 @@ public class ProblemcenteredDto: BasePageInput
     /// 状态
     /// </summary>
     public   string? Status { get; set; }
+    public   string? AbnormalState { get; set; }
 
     /// <summary>
     /// 处理人id

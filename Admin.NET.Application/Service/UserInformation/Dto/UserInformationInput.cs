@@ -17,6 +17,9 @@ namespace Admin.NET.Application.Service.UserInformation.Dto;
 /// </summary>
 public class UserInformationInput : BasePageInput
 {
+    public string name { get; set; }
+    public string personnelCardCode { get; set; }
+    public string jobTypes  { get; set; }
     /// <summary>
     /// 人员卡编码
     /// </summary>
@@ -61,6 +64,10 @@ public class UserInformationInput : BasePageInput
     /// 是否特种人员
     /// </summary>
     public bool? IsItSpecialPersonnel { get; set; }
+    /// <summary>
+    /// 账号
+    /// </summary>
+    public virtual long? UserId { get; set; }
 }
 
 /// <summary>

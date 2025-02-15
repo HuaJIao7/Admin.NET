@@ -10,27 +10,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Admin.NET.Application.Entity;
-
-[Tenant("1300000000001")]
-[SugarTable(null, "路线表")]
-public class RouteSchedule : EntityBaseData
+namespace Admin.NET.Application.Service.InstantTaskService.Dto;
+public class InstantTaskDto : Template
 {
     /// <summary>
-    /// 巡检记录ID
+    /// 巡检计划Id
+    /// </summary>
+    public virtual long? InspectionPlanId { get; set; }
+
+    /// <summary>
+    /// 巡检记录Id
     /// </summary>
     public virtual long? InspectionRecordId { get; set; }
 
     /// <summary>
-    /// 路线名称
+    /// 执行时间
     /// </summary>
-    public virtual string? RouteName { get; set; }
+    public virtual string? ExecutionTime { get; set; }
 
     /// <summary>
-    /// 点位名称
+    /// 状态
     /// </summary>
-    public virtual string? PointName { get; set; }
-
-    public virtual List<RouteSchedule> PointTables { get; set; }
-
+    public string State { get; set; }
 }

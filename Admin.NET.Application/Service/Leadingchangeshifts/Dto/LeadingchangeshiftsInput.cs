@@ -180,6 +180,16 @@ public class PageLeadingchangeshiftsInput : BasePageInput
     /// 选中主键列表
     /// </summary>
      public List<long> SelectKeyList { get; set; }
+
+    /// <summary>
+    /// 带班计划Id
+    /// </summary>
+    public long? leadershipplanId { get; set; }
+
+    /// <summary>
+    /// 路线
+    /// </summary>
+    public string? Route { get; set; }
 }
 
 /// <summary>
