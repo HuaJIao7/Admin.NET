@@ -31,6 +31,10 @@ public class InspectionPlanInput : Template
 public class InspectionPlanCon : BasePageInput
 {
     /// <summary>
+    /// 主键
+    /// </summary>
+    public virtual long? Id { get; set; }
+    /// <summary>
     /// 用户信息
     /// </summary>
     public virtual long? UserInformationId { get; set; }

@@ -28,6 +28,16 @@ public class InspectionPlan : EntityBaseData
     public string? Route { get; set; }
 
     /// <summary>
+    /// 班次
+    /// </summary>
+    public string? Shift { get; set; }
+
+    ///<summary>
+    ///点位id
+    /// </summary>
+    public long? PlaceId { get; set; }
+
+    /// <summary>
     /// 执行时间
     /// </summary>
     public virtual string? ExecutionTime { get; set; }

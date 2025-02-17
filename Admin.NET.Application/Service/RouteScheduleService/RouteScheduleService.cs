@@ -95,7 +95,9 @@ public class RouteScheduleService: IDynamicApiController, ITransient
         .Where(u => u.RouteName == input.RouteName || input.RouteName == null)
         .Select(route => new RouteScheduleDto
         {
+            InspectionRecordId = route.InspectionRecordId,
             RouteName = route.RouteName,
+            PointName = route.PointName,
             // 使用 SqlFunc.Subquery 来进行子查询
             PointTables = SqlFunc.Subqueryable<PointTable>().Where(x => x.InspectionRecordId == input.QueryID).ToList()
         });

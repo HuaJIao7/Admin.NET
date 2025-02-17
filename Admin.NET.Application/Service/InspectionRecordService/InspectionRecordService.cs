@@ -91,10 +91,13 @@ public class InspectionRecordService : IDynamicApiController, ITransient
     }
     [DisplayName("巡检记录查询")]
     [ApiDescriptionSettings(Name = "Page"), HttpPost]
-    public async Task<List<InspectionRecord>> Page(PageLeadingchangeshiftsInput input)
+    public async Task<SqlSugarPagedList<InspectionRecordDto>> Page(InspectionRecordCon input)
     {
-        var entity = await _InspectionRecord.AsQueryable().ClearFilter().ToListAsync();
-        return entity;
+        var query = _InspectionRecord.AsQueryable()
+            .Select<InspectionRecordDto>();
+
+        return await query.OrderBuilder(input).ToPagedListAsync(input.Page, input.PageSize);
+
         //var query = _InspectionRecord.AsQueryable()
         //    .WhereIF(!string.IsNullOrWhiteSpace(input.UserName), u => u.UserName.Contains(input.UserName.Trim()))
         //    .Select<InspectionRecordDto>();
@@ -109,7 +112,8 @@ public class InspectionRecordService : IDynamicApiController, ITransient
             .LeftJoin<RouteSchedule>((a,b) => a.Id == b.InspectionRecordId)
             .Select((a,b) => new InspectionRecord
             {
-               // InspectionRecordId = b.InspectionRecordId,
+                // InspectionRecordId = b.InspectionRecordId,
+                PointTables = SqlFunc.Subqueryable<PointTable>().Where(x => x.InspectionRecordId == input.QueryID).ToList()
             });
 
 

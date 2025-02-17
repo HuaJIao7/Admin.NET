@@ -151,4 +151,9 @@ public class InspectionRecordCon : BasePageInput
     /// 点位名称
     /// </summary>
     public virtual string? PointName { get; set; }
+
+    /// <summary>
+    /// 查询Id
+    /// </summary>
+    public virtual long? QueryID { get; set; }
 }

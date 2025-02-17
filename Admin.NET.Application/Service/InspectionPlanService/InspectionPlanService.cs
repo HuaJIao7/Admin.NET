@@ -39,6 +39,8 @@ public class InspectionPlanService : IDynamicApiController, ITransient
             var entity = input.Adapt<InspectionPlan>();
             entity.UserInformationId = input.UserInformationId;
             entity.Route = input.Route;
+            entity.PlaceId = input.PlaceId;
+            entity.Shift = input.Shift;
             entity.ExecutionTime = input.ExecutionTime;
             await _inspectionplan.InsertAsync(entity);
         }
@@ -86,6 +88,7 @@ public class InspectionPlanService : IDynamicApiController, ITransient
     public async Task<SqlSugarPagedList<InspectionPlanInput>> Page(InspectionPlanCon input)
     {
         var query = _inspectionplan.AsQueryable()
+            .Where(u => u.Id == input.Id || input.Id == null)
             .Select<InspectionPlanInput>();
         return await query.OrderBuilder(input).ToPagedListAsync(input.Page, input.PageSize);
     }

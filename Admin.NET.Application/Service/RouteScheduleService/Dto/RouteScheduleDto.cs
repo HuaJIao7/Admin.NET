@@ -15,6 +15,10 @@ namespace Admin.NET.Application.Service.RouteScheduleService.Dto;
 public class RouteScheduleDto : Template
 {
     /// <summary>
+    /// 主键
+    /// </summary>
+    public virtual long? Id { get; set; }
+    /// <summary>
     /// 巡检记录ID
     /// </summary>
     public virtual long? InspectionRecordId { get; set; }

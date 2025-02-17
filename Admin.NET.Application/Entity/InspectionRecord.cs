@@ -70,6 +70,8 @@ public class InspectionRecord : EntityBaseData
     /// </summary>
     public string State { get; set; }
 
+    public List<PointTable> PointTables { get; set; }
+
 
 
 }
